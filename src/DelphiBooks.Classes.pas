@@ -61,306 +61,231 @@ type
       : TJSONObject; virtual;
   end;
 
-TDelphiBooksListClass < T: TDelphiBooksClass,
-  constructor >= class(TList<T>)private
-//
+  TDelphiBooksListClass<T: TDelphiBooksClass, constructor> = class(TList<T>)
+  private
   protected
-//
   public
-function ToJSONArray(ForDelphiBooksRepository: boolean = false): TJSONArray;
-function FromJSONArray()
-virtual;
-end;
+    function ToJSONArray(ForDelphiBooksRepository: boolean = false)
+      : TJSONArray; virtual;
+    // TODO : function FromJSONArray()
+  end;
 
-TDelphiBooksLanguage = class(TDelphiBooksClass)private
+  TDelphiBooksLanguage = class(TDelphiBooksClass)
+  private
 
-const
-  CDataVersion = 1;
+    const
+    CDataVersion = 1;
 
-var
-  FISOCode: string;
-  FText: string;
+  var
+    FISOCode: string;
+    FText: string;
 
-procedure SetISOCode(const Value: string);
-  procedure SetText(const Value: string);
+    procedure SetISOCode(const Value: string);
+    procedure SetText(const Value: string);
   protected
-    function GetClassDataVersion: integer;
-    override;
+    function GetClassDataVersion: integer; override;
   public
     property ISOCode: string read FISOCode write SetISOCode;
     property Text: string read FText write SetText;
-    constructor CreateFromJSON(AJSON: TJSONObject);
-    override;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
-      : TJSONObject;
-    override;
-    constructor Create;
-    override;
-    end;
+      : TJSONObject; override;
+    constructor Create; override;
+  end;
 
-    TDelphiBooksLanguagesList = class
-      (TDelphiBooksListClass<TDelphiBooksLanguage>)
-    end;
+  TDelphiBooksLanguagesList = class(TDelphiBooksListClass<TDelphiBooksLanguage>)
+  end;
 
-    TDelphiBooksKeyword = class(TDelphiBooksClass)private
-  const
+  TDelphiBooksKeyword = class(TDelphiBooksClass)
+  private const
     CDataVersion = 1;
 
   var
     FText: string;
     procedure SetText(const Value: string);
-    protected
-      function GetClassDataVersion: integer;
-      override;
-    public
-      property Text: string read FText write SetText;
-      constructor CreateFromJSON(AJSON: TJSONObject);
-      override;
-      function ToJSONObject(ForDelphiBooksRepository: boolean = false)
-        : TJSONObject;
-      override;
-      constructor Create;
-      override;
-      end;
+  protected
+    function GetClassDataVersion: integer; override;
+  public
+    property Text: string read FText write SetText;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+  end;
 
-      TDelphiBooksKeywordsList = class
-        (TDelphiBooksListClass<TDelphiBooksKeyword>)
-      end;
+  TDelphiBooksKeywordsList = class(TDelphiBooksListClass<TDelphiBooksKeyword>)
+  end;
 
-      TDelphiBooksDescription = class(TDelphiBooksClass)private
-    const
-      CDataVersion = 1;
+  TDelphiBooksDescription = class(TDelphiBooksClass)
+  private const
+    CDataVersion = 1;
 
-    var
-      FLanguageISOCode: string;
-      FText: string;
-      procedure SetLanguageISOCode(const Value: string);
-        procedure SetText(const Value: string);
-        protected
-          function GetClassDataVersion: integer;
-          override;
-        public
-          property LanguageISOCode: string read FLanguageISOCode
-            write SetLanguageISOCode;
-          property Text: string read FText write SetText;
-          constructor CreateFromJSON(AJSON: TJSONObject);
-          override;
-          function ToJSONObject(ForDelphiBooksRepository: boolean = false)
-            : TJSONObject;
-          override;
-          constructor Create;
-          override;
-          end;
+  var
+    FLanguageISOCode: string;
+    FText: string;
+    procedure SetLanguageISOCode(const Value: string);
+    procedure SetText(const Value: string);
+  protected
+    function GetClassDataVersion: integer; override;
+  public
+    property LanguageISOCode: string read FLanguageISOCode
+      write SetLanguageISOCode;
+    property Text: string read FText write SetText;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+  end;
 
-          TDelphiBooksDescriptionsList = class
-            (TDelphiBooksListClass<TDelphiBooksDescription>)
-          end;
+  TDelphiBooksDescriptionsList = class
+    (TDelphiBooksListClass<TDelphiBooksDescription>)
+  end;
 
-          TDelphiBooksTableOfContent = class(TDelphiBooksClass)private
-        const
-          CDataVersion = 1;
+  TDelphiBooksTableOfContent = class(TDelphiBooksClass)
+  private const
+    CDataVersion = 1;
 
-        var
-          FLanguageISOCode: string;
-          FText: string;
-          procedure SetLanguageISOCode(const Value: string);
-            procedure SetText(const Value: string);
-            protected
-              function GetClassDataVersion: integer;
-              override;
-            public
-              property LanguageISOCode: string read FLanguageISOCode
-                write SetLanguageISOCode;
-              property Text: string read FText write SetText;
-              constructor CreateFromJSON(AJSON: TJSONObject);
-              override;
-              function ToJSONObject(ForDelphiBooksRepository: boolean = false)
-                : TJSONObject;
-              override;
-              constructor Create;
-              override;
-              end;
+  var
+    FLanguageISOCode: string;
+    FText: string;
+    procedure SetLanguageISOCode(const Value: string);
+    procedure SetText(const Value: string);
+  protected
+    function GetClassDataVersion: integer; override;
+  public
+    property LanguageISOCode: string read FLanguageISOCode
+      write SetLanguageISOCode;
+    property Text: string read FText write SetText;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+  end;
 
-              TDelphiBooksTableOfContentsList = class
-                (TDelphiBooksListClass<TDelphiBooksTableOfContent>)
-              end;
+  TDelphiBooksTableOfContentsList = class
+    (TDelphiBooksListClass<TDelphiBooksTableOfContent>)
+  end;
 
-              TDelphiBooksAuthor = class(TDelphiBooksClass)private
-            const
-              CDataVersion = 1;
+  TDelphiBooksAuthor = class(TDelphiBooksClass)
+  private const
+    CDataVersion = 1;
 
-            var
-              FLastName: string;
-              FPseudo: string;
-              Furl: string;
-              FFirstName: string;
-              FDescriptions: TDelphiBooksDescriptionsList;
-              FBooks: TDelphiBooksBooksList;
-              procedure SetFirstName(const Value: string);
-                procedure SetLastName(const Value: string);
-                  procedure SetPseudo(const Value: string);
-                    procedure Seturl(const Value: string);
-                      procedure SetDescriptions(const Value
-                        : TDelphiBooksDescriptionsList);
-                        procedure SetBooks(const Value: TDelphiBooksBooksList);
-                        protected
-                          function GetClassDataVersion: integer;
-                          override;
-                        public
-                          property LastName: string read FLastName
-                            write SetLastName;
-                          property FirstName: string read FFirstName
-                            write SetFirstName;
-                          property Pseudo: string read FPseudo write SetPseudo;
-                          property URL: string read Furl write Seturl;
-                          property Descriptions: TDelphiBooksDescriptionsList
-                            read FDescriptions write SetDescriptions;
-                          property Books: TDelphiBooksBooksList read FBooks
-                            write SetBooks;
-                          constructor CreateFromJSON(AJSON: TJSONObject);
-                          override;
-                          function ToJSONObject(ForDelphiBooksRepository
-                            : boolean = false): TJSONObject;
-                          override;
-                          constructor Create;
-                          override;
-                          destructor Destroy;
-                          override;
-                          end;
+  var
+    FLastName: string;
+    FPseudo: string;
+    Furl: string;
+    FFirstName: string;
+    FDescriptions: TDelphiBooksDescriptionsList;
+    FBooks: TDelphiBooksBooksList;
+    procedure SetFirstName(const Value: string);
+    procedure SetLastName(const Value: string);
+    procedure SetPseudo(const Value: string);
+    procedure Seturl(const Value: string);
+    procedure SetDescriptions(const Value: TDelphiBooksDescriptionsList);
+    procedure SetBooks(const Value: TDelphiBooksBooksList);
+  protected
+    function GetClassDataVersion: integer; override;
+  public
+    property LastName: string read FLastName write SetLastName;
+    property FirstName: string read FFirstName write SetFirstName;
+    property Pseudo: string read FPseudo write SetPseudo;
+    property URL: string read Furl write Seturl;
+    property Descriptions: TDelphiBooksDescriptionsList read FDescriptions
+      write SetDescriptions;
+    property Books: TDelphiBooksBooksList read FBooks write SetBooks;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
 
-                          TDelphiBooksAuthorsList = class
-                            (TDelphiBooksListClass<TDelphiBooksAuthor>)
-                          end;
+  TDelphiBooksAuthorsList = class(TDelphiBooksListClass<TDelphiBooksAuthor>)
+  end;
 
-                          TDelphiBooksPublisher = class
-                            (TDelphiBooksClass)private
-                        const
-                          CDataVersion = 1;
+  TDelphiBooksPublisher = class(TDelphiBooksClass)
+  private const
+    CDataVersion = 1;
 
-                        var
-                          FBooks: TDelphiBooksBooksList;
-                          FDescriptions: TDelphiBooksDescriptionsList;
-                          FCompanyName: string;
-                          Furl: string;
-                          procedure SetBooks(const Value
-                            : TDelphiBooksBooksList);
-                            procedure SetCompanyName(const Value: string);
-                              procedure SetDescriptions
-                                (const Value: TDelphiBooksDescriptionsList);
-                                procedure Seturl(const Value: string);
-                                protected
-                                  function GetClassDataVersion: integer;
-                                  override;
-                                public
-                                  property CompanyName: string read FCompanyName
-                                    write SetCompanyName;
-                                  property URL: string read Furl write Seturl;
-                                  property Descriptions
-                                    : TDelphiBooksDescriptionsList
-                                    read FDescriptions write SetDescriptions;
-                                  property Books: TDelphiBooksBooksList
-                                    read FBooks write SetBooks;
-                                  constructor CreateFromJSON
-                                    (AJSON: TJSONObject);
-                                  override;
-                                  function ToJSONObject(ForDelphiBooksRepository
-                                    : boolean = false): TJSONObject;
-                                  override;
-                                  constructor Create;
-                                  override;
-                                  destructor Destroy;
-                                  override;
-                                  end;
+  var
+    FBooks: TDelphiBooksBooksList;
+    FDescriptions: TDelphiBooksDescriptionsList;
+    FCompanyName: string;
+    Furl: string;
+    procedure SetBooks(const Value: TDelphiBooksBooksList);
+    procedure SetCompanyName(const Value: string);
+    procedure SetDescriptions(const Value: TDelphiBooksDescriptionsList);
+    procedure Seturl(const Value: string);
+  protected
+    function GetClassDataVersion: integer; override;
+  public
+    property CompanyName: string read FCompanyName write SetCompanyName;
+    property URL: string read Furl write Seturl;
+    property Descriptions: TDelphiBooksDescriptionsList read FDescriptions
+      write SetDescriptions;
+    property Books: TDelphiBooksBooksList read FBooks write SetBooks;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
 
-                                  TDelphiBooksPublishersList = class
-                                    (TDelphiBooksListClass<
-                                    TDelphiBooksPublisher>)
-                                  end;
+  TDelphiBooksPublishersList = class
+    (TDelphiBooksListClass<TDelphiBooksPublisher>)
+  end;
 
-                                  TDelphiBooksBook = class
-                                    (TDelphiBooksClass)private
-                                const
-                                  CDataVersion = 1;
+  TDelphiBooksBook = class(TDelphiBooksClass)
+  private const
+    CDataVersion = 1;
 
-                                var
-                                  FTOCs: TDelphiBooksTableOfContentsList;
-                                  FLanguageISOCode: string;
-                                  FPublishedDateYYYYMMDD: string;
-                                  FDescriptions: TDelphiBooksDescriptionsList;
-                                  FTitle: string;
-                                  FISBN13: string;
-                                  FISBN10: string;
-                                  FAuthors: TDelphiBooksAuthorsList;
-                                  Furl: string;
-                                  FPublishers: TDelphiBooksPublishersList;
-                                  procedure SetAuthors
-                                    (const Value: TDelphiBooksAuthorsList);
-                                    procedure SetDescriptions
-                                      (const Value
-                                      : TDelphiBooksDescriptionsList);
-                                      procedure SetISBN10(const Value: string);
-                                        procedure SetISBN13
-                                        (const Value: string);
-                                        procedure SetLanguageISOCode
-                                        (const Value: string);
-                                        procedure SetPublishedDateYYYYMMDD
-                                        (const Value: string);
-                                        procedure SetPublishers
-                                        (const Value
-                                        : TDelphiBooksPublishersList);
-                                        procedure SetTitle(const Value: string);
-                                        procedure SetTOCs
-                                        (const Value
-                                        : TDelphiBooksTableOfContentsList);
-                                        procedure Seturl(const Value: string);
-                                        protected
-                                        function GetClassDataVersion: integer;
-                                        override;
-                                        public
-                                        property Title: string read FTitle
-                                        write SetTitle;
-                                        property Descriptions
-                                        : TDelphiBooksDescriptionsList
-                                        read FDescriptions
-                                        write SetDescriptions;
-                                        property TOCs
-                                        : TDelphiBooksTableOfContentsList
-                                        read FTOCs write SetTOCs;
-                                        property Authors
-                                        : TDelphiBooksAuthorsList read FAuthors
-                                        write SetAuthors;
-                                        property Publishers
-                                        : TDelphiBooksPublishersList
-                                        read FPublishers write SetPublishers;
-                                        property ISBN10: string read FISBN10
-                                        write SetISBN10;
-                                        property ISBN13: string read FISBN13
-                                        write SetISBN13;
-                                        property LanguageISOCode: string
-                                        read FLanguageISOCode
-                                        write SetLanguageISOCode;
-                                        property PublishedDateYYYYMMDD: string
-                                        read FPublishedDateYYYYMMDD
-                                        write SetPublishedDateYYYYMMDD;
-                                        property URL: string read Furl
-                                        write Seturl;
-                                        constructor CreateFromJSON
-                                        (AJSON: TJSONObject);
-                                        override;
-                                        function ToJSONObject
-                                        (ForDelphiBooksRepository
-                                        : boolean = false): TJSONObject;
-                                        override;
-                                        constructor Create;
-                                        override;
-                                        destructor Destroy;
-                                        override;
-                                        end;
+  var
+    FTOCs: TDelphiBooksTableOfContentsList;
+    FLanguageISOCode: string;
+    FPublishedDateYYYYMMDD: string;
+    FDescriptions: TDelphiBooksDescriptionsList;
+    FTitle: string;
+    FISBN13: string;
+    FISBN10: string;
+    FAuthors: TDelphiBooksAuthorsList;
+    Furl: string;
+    FPublishers: TDelphiBooksPublishersList;
+    procedure SetAuthors(const Value: TDelphiBooksAuthorsList);
+    procedure SetDescriptions(const Value: TDelphiBooksDescriptionsList);
+    procedure SetISBN10(const Value: string);
+    procedure SetISBN13(const Value: string);
+    procedure SetLanguageISOCode(const Value: string);
+    procedure SetPublishedDateYYYYMMDD(const Value: string);
+    procedure SetPublishers(const Value: TDelphiBooksPublishersList);
+    procedure SetTitle(const Value: string);
+    procedure SetTOCs(const Value: TDelphiBooksTableOfContentsList);
+    procedure Seturl(const Value: string);
+  protected
+    function GetClassDataVersion: integer; override;
+  public
+    property Title: string read FTitle write SetTitle;
+    property Descriptions: TDelphiBooksDescriptionsList read FDescriptions
+      write SetDescriptions;
+    property TOCs: TDelphiBooksTableOfContentsList read FTOCs write SetTOCs;
+    property Authors: TDelphiBooksAuthorsList read FAuthors write SetAuthors;
+    property Publishers: TDelphiBooksPublishersList read FPublishers
+      write SetPublishers;
+    property ISBN10: string read FISBN10 write SetISBN10;
+    property ISBN13: string read FISBN13 write SetISBN13;
+    property LanguageISOCode: string read FLanguageISOCode
+      write SetLanguageISOCode;
+    property PublishedDateYYYYMMDD: string read FPublishedDateYYYYMMDD
+      write SetPublishedDateYYYYMMDD;
+    property URL: string read Furl write Seturl;
+    constructor CreateFromJSON(AJSON: TJSONObject); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
 
-                                        TDelphiBooksBooksList = class
-                                        (TDelphiBooksListClass<
-                                        TDelphiBooksBook>)
-                                        end;
+  TDelphiBooksBooksList = class(TDelphiBooksListClass<TDelphiBooksBook>)
+  end;
 
 implementation
 
