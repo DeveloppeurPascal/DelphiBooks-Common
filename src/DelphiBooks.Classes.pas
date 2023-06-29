@@ -1,5 +1,7 @@
 unit DelphiBooks.Classes;
 
+// TODO : sur authors, écraser champ "name" de l'objet short par PublicName sur la version complete
+// TODO : add classes for a language and a list of languages
 interface
 
 uses
@@ -12,20 +14,22 @@ const
 type
   TDelphiBooksItem = class
   private
-    FId: integer;
     Fguid: string;
     FPageName: string;
     FDataLevel: integer;
     FDataVersion: integer;
-    FHasChanged: boolean;
     FIsPageToBuild: boolean;
     FURL: string;
     function Getguid: string;
     procedure SetPageName(const Value: string);
     procedure SetURL(const Value: string);
   protected
+    FId: integer;
+    FHasChanged: boolean;
     procedure ValuesChanged;
     function GetClassDataVersion: integer; virtual; abstract;
+    function hasID: boolean; virtual;
+    function hasURL: boolean; virtual;
   public
     property Id: integer read FId;
     property URL: string read FURL write SetURL;
@@ -81,6 +85,8 @@ type
     procedure SetText(const Value: string);
   protected
     function GetClassDataVersion: integer; override;
+    function hasID: boolean; override;
+    function hasURL: boolean; override;
   public
     property LanguageISOCode: string read FLanguageISOCode
       write SetLanguageISOCode;
@@ -111,6 +117,7 @@ type
   end;
 
   TDelphiBooksKeyword = class(TDelphiBooksTextItem)
+  // TODO : the keywords have a webpage with each books on them, so the function hasURL: boolean; override; is True
   end;
 
   TDelphiBooksKeywordsList = class
@@ -517,7 +524,10 @@ begin
       ('Can''t load datas with this program. Please update it.');
 
   if not AJSON.TryGetValue<integer>('id', FId) then
-    raise exception.Create('ID not found');
+    if hasID then
+      raise exception.Create('ID not found')
+    else
+      FId := CDelphiBooksNullID;
 
   if not AJSON.TryGetValue<string>('guid', Fguid) then
     Fguid := '';
@@ -553,6 +563,16 @@ begin
   result := Fguid;
 end;
 
+function TDelphiBooksItem.hasID: boolean;
+begin
+  result := true;
+end;
+
+function TDelphiBooksItem.hasURL: boolean;
+begin
+  result := true;
+end;
+
 procedure TDelphiBooksItem.SetPageName(const Value: string);
 begin
   FPageName := Value;
@@ -570,11 +590,15 @@ function TDelphiBooksItem.ToJSONObject(ForDelphiBooksRepository: boolean)
 begin
   result := TJSONObject.Create;
 
-  if (not ForDelphiBooksRepository) and (FId = CDelphiBooksNullID) then
-    raise exception.Create('ID undefined !');
+  if hasID then
+  begin
+    if (not ForDelphiBooksRepository) and (FId = CDelphiBooksNullID) then
+      raise exception.Create('ID undefined !');
+    result.AddPair('id', Id);
+  end;
 
-  result.AddPair('id', Id);
-  result.AddPair('url', URL);
+  if hasURL then
+    result.AddPair('url', URL);
 
   if ForDelphiBooksRepository then
   begin
@@ -877,6 +901,16 @@ end;
 function TDelphiBooksTextItem.GetClassDataVersion: integer;
 begin
   result := CDataVersion;
+end;
+
+function TDelphiBooksTextItem.hasID: boolean;
+begin
+  result := false;
+end;
+
+function TDelphiBooksTextItem.hasURL: boolean;
+begin
+  result := false;
 end;
 
 procedure TDelphiBooksTextItem.SetLanguageISOCode(const Value: string);
@@ -1460,8 +1494,7 @@ begin
   result.AddPair('descriptions',
     Descriptions.ToJSONArray(ForDelphiBooksRepository));
   result.AddPair('tocs', TOCs.ToJSONArray(ForDelphiBooksRepository));
-  result.AddPair('descriptions',
-    Keywords.ToJSONArray(ForDelphiBooksRepository));
+  result.AddPair('keywords', Keywords.ToJSONArray(ForDelphiBooksRepository));
 end;
 
 { TDelphiBooksTextItemsList<T> }
