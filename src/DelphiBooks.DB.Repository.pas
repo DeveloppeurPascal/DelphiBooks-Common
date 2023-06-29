@@ -1,7 +1,5 @@
 unit DelphiBooks.DB.Repository;
 
-// TODO : import/save pictures in the database repository
-// TODO : export pictures and thumbs in the website folder
 interface
 
 uses
@@ -24,7 +22,6 @@ type
     procedure SetBooks(const Value: TDelphiBooksBooksObjectList);
     procedure SetPublishers(const Value: TDelphiBooksPublishersObjectList);
   protected
-    function GuidToFilename(AGuid: string; ATable: TDelphiBooksTable): string;
     procedure CreateRecordFromRepository(AFilename: string;
       ATable: TDelphiBooksTable);
   public
@@ -40,7 +37,17 @@ type
     procedure SaveToRepository(AFolder: string = '';
       FOnlyChanged: boolean = true); virtual;
     procedure CheckRepositoryLevelInFolder(AFolder: string);
+    function GuidToFilename(AGuid: string; ATable: TDelphiBooksTable;
+      AFileExtension: string): string;
   end;
+
+  TDelphiBooksItemHelper = class helper for TDelphiBooksItem
+  public
+    procedure SetId(AID: integer);
+    procedure SetHasChanged(AHasChanged: boolean);
+  end;
+
+function AddNewLineToJSONAsString(JSON: string): string;
 
 implementation
 
@@ -161,10 +168,16 @@ begin
 end;
 
 function TDelphiBooksDatabase.GuidToFilename(AGuid: string;
-  ATable: TDelphiBooksTable): string;
+  ATable: TDelphiBooksTable; AFileExtension: string): string;
 var
   i: integer;
 begin
+  while AFileExtension.StartsWith('.') do
+    AFileExtension := AFileExtension.Substring(1);
+
+  if AFileExtension.isempty then
+    raise exception.Create('Please specify an extension for this file !');
+
   if AGuid.isempty then
     raise exception.Create('Need a GUID to define a filename.');
 
@@ -172,7 +185,7 @@ begin
   for i := 0 to length(AGuid) - 1 do
   begin
     if CharInSet(AGuid.Chars[i], ['0' .. '9', 'A' .. 'Z', 'a' .. 'z']) then
-      AGuid := AGuid + AGuid.Chars[i];
+      result := result + AGuid.Chars[i];
   end;
 
   if result.isempty then
@@ -187,7 +200,7 @@ begin
       result := 'b-' + result;
   end;
 
-  result := result + '.db';
+  result := result + '.' + AFileExtension;
 end;
 
 procedure TDelphiBooksDatabase.SaveToRepository(AFolder: string;
@@ -217,28 +230,35 @@ begin
   if Authors.Count > 0 then
     for Author in Authors do
       if (FOnlyChanged and Author.hasChanged) or (not FOnlyChanged) then
-        tfile.WriteAllText(tpath.Combine(AFolder, GuidToFilename(Author.Guid,
-          TDelphiBooksTable.Authors)), Author.ToJSONObject(true).ToJSON,
+      begin
+        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
+          GuidToFilename(Author.Guid, TDelphiBooksTable.Authors, 'json')),
+          AddNewLineToJSONAsString(Author.ToJSONObject(true).ToJSON),
           tencoding.utf8);
+        Author.SetHasChanged(false);
+      end;
 
   if Publishers.Count > 0 then
     for Publisher in Publishers do
       if (FOnlyChanged and Publisher.hasChanged) or (not FOnlyChanged) then
-        tfile.WriteAllText(tpath.Combine(AFolder, GuidToFilename(Publisher.Guid,
-          TDelphiBooksTable.Publishers)), Author.ToJSONObject(true).ToJSON,
+      begin
+        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
+          GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers, 'json')),
+          AddNewLineToJSONAsString(Publisher.ToJSONObject(true).ToJSON),
           tencoding.utf8);
+        Publisher.SetHasChanged(false);
+      end;
 
   if Books.Count > 0 then
     for Book in Books do
       if (FOnlyChanged and Book.hasChanged) or (not FOnlyChanged) then
-        tfile.WriteAllText(tpath.Combine(AFolder, GuidToFilename(Book.Guid,
-          TDelphiBooksTable.Books)), Author.ToJSONObject(true).ToJSON,
+      begin
+        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
+          GuidToFilename(Book.Guid, TDelphiBooksTable.Books, 'json')),
+          AddNewLineToJSONAsString(Book.ToJSONObject(true).ToJSON),
           tencoding.utf8);
-
-  // TODO : add something to change the hasChanged property (perhaps with a helper)
-
-  // TODO : à compléter
-
+        Book.SetHasChanged(false);
+      end;
 end;
 
 procedure TDelphiBooksDatabase.CheckRepositoryLevelInFolder(AFolder: string);
@@ -273,6 +293,36 @@ procedure TDelphiBooksDatabase.SetPublishers(const Value
   : TDelphiBooksPublishersObjectList);
 begin
   FPublishers := Value;
+end;
+
+{ TDelphiBooksItemHelper }
+
+procedure TDelphiBooksItemHelper.SetHasChanged(AHasChanged: boolean);
+begin
+  FHasChanged := AHasChanged;
+end;
+
+procedure TDelphiBooksItemHelper.SetId(AID: integer);
+begin
+  fid := AID;
+end;
+
+function AddNewLineToJSONAsString(JSON: string): string;
+begin
+  result := JSON;
+  // #10 = Line Feed
+  result := result.Replace('{"', '{' + #10 + '"', [rfReplaceAll]);
+  result := result.Replace('{[', '{[' + #10, [rfReplaceAll]);
+  result := result.Replace(':[', ':[' + #10, [rfReplaceAll]);
+  result := result.Replace(',"', ',' + #10 + '"', [rfReplaceAll]);
+  result := result.Replace('},{', #10 + '},{' + #10, [rfReplaceAll]);
+  // {-"
+  // "-}
+  // {-[-
+  // :[-
+  // -],
+  // ,-"
+  // -] (dernier du fichier)
 end;
 
 end.
