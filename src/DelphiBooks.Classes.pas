@@ -1,7 +1,7 @@
 unit DelphiBooks.Classes;
 
 // TODO : sur authors, écraser champ "name" de l'objet short par PublicName sur la version complete
-// TODO : add classes for a language and a list of languages
+// TODO : add something to get covers and thumbs files for books
 interface
 
 uses
@@ -117,7 +117,11 @@ type
   end;
 
   TDelphiBooksKeyword = class(TDelphiBooksTextItem)
-  // TODO : the keywords have a webpage with each books on them, so the function hasURL: boolean; override; is True
+  private
+  protected
+    function hasID: boolean; override;
+    function hasURL: boolean; override;
+  public
   end;
 
   TDelphiBooksKeywordsList = class
@@ -148,6 +152,22 @@ type
 
   TDelphiBooksTableOfContentsObjectList = class
     (TDelphiBooksTextItemsObjectList<TDelphiBooksTableOfContent>)
+  end;
+
+  TDelphiBooksLanguage = class(TDelphiBooksTextItem)
+  private
+  protected
+    function hasID: boolean; override;
+    function hasURL: boolean; override;
+  public
+  end;
+
+  TDelphiBooksLanguagesList = class
+    (TDelphiBooksTextItemsList<TDelphiBooksLanguage>)
+  end;
+
+  TDelphiBooksLanguagesObjectList = class
+    (TDelphiBooksTextItemsObjectList<TDelphiBooksLanguage>)
   end;
 
   TDelphiBooksAuthorShort = class(TDelphiBooksItem)
@@ -1787,6 +1807,30 @@ begin
         result := e;
         break;
       end;
+end;
+
+{ TDelphiBooksKeyword }
+
+function TDelphiBooksKeyword.hasID: boolean;
+begin
+  result := true;
+end;
+
+function TDelphiBooksKeyword.hasURL: boolean;
+begin
+  result := true;
+end;
+
+{ TDelphiBooksLanguage }
+
+function TDelphiBooksLanguage.hasID: boolean;
+begin
+  result := true;
+end;
+
+function TDelphiBooksLanguage.hasURL: boolean;
+begin
+  result := true;
 end;
 
 end.
