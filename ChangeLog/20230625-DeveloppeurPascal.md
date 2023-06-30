@@ -1,4 +1,4 @@
-# 20230625 - [DeveloppeurPascal](DeveloppeurPascal)
+# 20230625 - [DeveloppeurPascal](https://github.com/DeveloppeurPascal)
 
 * removed empty TODO list file, use GitHub issues instead of it
 * updated FR/EN docs

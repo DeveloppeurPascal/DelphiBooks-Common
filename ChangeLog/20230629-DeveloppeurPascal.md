@@ -1,4 +1,4 @@
-# 20230629 - [DeveloppeurPascal](DeveloppeurPascal)
+# 20230629 - [DeveloppeurPascal](https://github.com/DeveloppeurPascal)
 
 * moved the FID and FHasChanged properties from private to protected bloc of class TDelphiBooksItem
 * add boolean hasId() method to check if an object has an ID (description & TOC don't)
