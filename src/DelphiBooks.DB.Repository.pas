@@ -7,17 +7,20 @@ uses
 
 type
 {$SCOPEDENUMS ON}
-  TDelphiBooksTable = (Authors, Publishers, Books);
+  TDelphiBooksTable = (Authors, Publishers, Books, Languages);
 
   TDelphiBooksDatabase = class
   private const
-    CDatabaseVersion = '20230628';
+    CDatabaseVersion = '20230630';
+    CDBFileExtension = 'json';
 
   var
     FDatabaseFolder: string;
     FBooks: TDelphiBooksBooksObjectList;
     FAuthors: TDelphiBooksAuthorsObjectList;
     FPublishers: TDelphiBooksPublishersObjectList;
+    FLanguages: TDelphiBooksLanguagesObjectList;
+    procedure SetLanguages(const Value: TDelphiBooksLanguagesObjectList);
     procedure SetAuthors(const Value: TDelphiBooksAuthorsObjectList);
     procedure SetBooks(const Value: TDelphiBooksBooksObjectList);
     procedure SetPublishers(const Value: TDelphiBooksPublishersObjectList);
@@ -30,6 +33,8 @@ type
     property Publishers: TDelphiBooksPublishersObjectList read FPublishers
       write SetPublishers;
     property Books: TDelphiBooksBooksObjectList read FBooks write SetBooks;
+    property Languages: TDelphiBooksLanguagesObjectList read FLanguages
+      write SetLanguages;
     property DatabaseFolder: string read FDatabaseFolder;
     constructor Create; virtual;
     destructor Destroy; override;
@@ -66,6 +71,7 @@ begin
   FBooks := TDelphiBooksBooksObjectList.Create;
   FAuthors := TDelphiBooksAuthorsObjectList.Create;
   FPublishers := TDelphiBooksPublishersObjectList.Create;
+  FLanguages := TDelphiBooksLanguagesObjectList.Create;
 
   FDatabaseFolder := '';
 {$IFDEF DEBUG}
@@ -104,25 +110,32 @@ begin
   Create;
 
   // Load all authors
-  Files := tdirectory.getfiles(DatabaseFolder, 'a-*.db');
+  Files := tdirectory.getfiles(DatabaseFolder, 'a-*.' + CDBFileExtension);
   Authors.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Authors);
 
   // Load all publishers
-  Files := tdirectory.getfiles(DatabaseFolder, 'p-*.db');
+  Files := tdirectory.getfiles(DatabaseFolder, 'p-*.' + CDBFileExtension);
   Publishers.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Publishers);
 
   // Load all books
-  Files := tdirectory.getfiles(DatabaseFolder, 'b-*.db');
+  Files := tdirectory.getfiles(DatabaseFolder, 'b-*.' + CDBFileExtension);
   Books.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Books);
+
+  // Load all languages
+  Files := tdirectory.getfiles(DatabaseFolder, 'l-*.' + CDBFileExtension);
+  Languages.clear;
+  if (length(Files) > 0) then
+    for i := 0 to length(Files) - 1 do
+      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Languages);
 
   // All is good, we save the database repository folder
   FDatabaseFolder := DatabaseFolder;
@@ -153,6 +166,8 @@ begin
         Publishers.add(tdelphibookspublisher.createfromjson(JSO, true));
       TDelphiBooksTable.Books:
         Books.add(tdelphibooksbook.createfromjson(JSO, true));
+      TDelphiBooksTable.Languages:
+        Languages.add(tdelphibookslanguage.createfromjson(JSO, true));
     end;
   finally
     JSO.Free;
@@ -161,6 +176,7 @@ end;
 
 destructor TDelphiBooksDatabase.Destroy;
 begin
+  FLanguages.Free;
   FBooks.Free;
   FPublishers.Free;
   FAuthors.Free;
@@ -198,6 +214,8 @@ begin
       result := 'p-' + result;
     TDelphiBooksTable.Books:
       result := 'b-' + result;
+    TDelphiBooksTable.Languages:
+      result := 'l-' + result;
   end;
 
   result := result + '.' + AFileExtension;
@@ -210,6 +228,7 @@ var
   Author: tdelphibooksauthor;
   Publisher: tdelphibookspublisher;
   Book: tdelphibooksbook;
+  Language: tdelphibookslanguage;
 begin
   if not AFolder.isempty then
   begin
@@ -232,9 +251,9 @@ begin
       if (FOnlyChanged and Author.hasChanged) or (not FOnlyChanged) then
       begin
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Author.Guid, TDelphiBooksTable.Authors, 'json')),
-          AddNewLineToJSONAsString(Author.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
+          GuidToFilename(Author.Guid, TDelphiBooksTable.Authors,
+          CDBFileExtension)), AddNewLineToJSONAsString(Author.ToJSONObject(true)
+          .ToJSON), tencoding.utf8);
         Author.SetHasChanged(false);
       end;
 
@@ -243,7 +262,8 @@ begin
       if (FOnlyChanged and Publisher.hasChanged) or (not FOnlyChanged) then
       begin
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers, 'json')),
+          GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers,
+          CDBFileExtension)),
           AddNewLineToJSONAsString(Publisher.ToJSONObject(true).ToJSON),
           tencoding.utf8);
         Publisher.SetHasChanged(false);
@@ -254,10 +274,22 @@ begin
       if (FOnlyChanged and Book.hasChanged) or (not FOnlyChanged) then
       begin
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Book.Guid, TDelphiBooksTable.Books, 'json')),
+          GuidToFilename(Book.Guid, TDelphiBooksTable.Books, CDBFileExtension)),
           AddNewLineToJSONAsString(Book.ToJSONObject(true).ToJSON),
           tencoding.utf8);
         Book.SetHasChanged(false);
+      end;
+
+  if Languages.Count > 0 then
+    for Language in Languages do
+      if (FOnlyChanged and Language.hasChanged) or (not FOnlyChanged) then
+      begin
+        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
+          GuidToFilename(Language.Guid, TDelphiBooksTable.Languages,
+          CDBFileExtension)),
+          AddNewLineToJSONAsString(Language.ToJSONObject(true).ToJSON),
+          tencoding.utf8);
+        Language.SetHasChanged(false);
       end;
 end;
 
@@ -287,6 +319,12 @@ procedure TDelphiBooksDatabase.SetBooks(const Value
   : TDelphiBooksBooksObjectList);
 begin
   FBooks := Value;
+end;
+
+procedure TDelphiBooksDatabase.SetLanguages(const Value
+  : TDelphiBooksLanguagesObjectList);
+begin
+  FLanguages := Value;
 end;
 
 procedure TDelphiBooksDatabase.SetPublishers(const Value
