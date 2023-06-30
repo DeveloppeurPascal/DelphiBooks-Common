@@ -12,7 +12,7 @@ type
   TDelphiBooksDatabase = class
   private const
     CDatabaseVersion = '20230630';
-    CDBFileExtension = 'json';
+    CDBFileExtension = '.json';
 
   var
     FDatabaseFolder: string;
@@ -27,7 +27,8 @@ type
   protected
     procedure CreateRecordFromRepository(AFilename: string;
       ATable: TDelphiBooksTable);
-  public
+  public const
+    CThumbExtension = '.jpg';
     property Authors: TDelphiBooksAuthorsObjectList read FAuthors
       write SetAuthors;
     property Publishers: TDelphiBooksPublishersObjectList read FPublishers
@@ -110,28 +111,28 @@ begin
   Create;
 
   // Load all authors
-  Files := tdirectory.getfiles(DatabaseFolder, 'a-*.' + CDBFileExtension);
+  Files := tdirectory.getfiles(DatabaseFolder, 'a-*' + CDBFileExtension);
   Authors.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Authors);
 
   // Load all publishers
-  Files := tdirectory.getfiles(DatabaseFolder, 'p-*.' + CDBFileExtension);
+  Files := tdirectory.getfiles(DatabaseFolder, 'p-*' + CDBFileExtension);
   Publishers.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Publishers);
 
   // Load all books
-  Files := tdirectory.getfiles(DatabaseFolder, 'b-*.' + CDBFileExtension);
+  Files := tdirectory.getfiles(DatabaseFolder, 'b-*' + CDBFileExtension);
   Books.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Books);
 
   // Load all languages
-  Files := tdirectory.getfiles(DatabaseFolder, 'l-*.' + CDBFileExtension);
+  Files := tdirectory.getfiles(DatabaseFolder, 'l-*' + CDBFileExtension);
   Languages.clear;
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
@@ -250,6 +251,7 @@ begin
     for Author in Authors do
       if (FOnlyChanged and Author.hasChanged) or (not FOnlyChanged) then
       begin
+        // TODO : don't save a file where previous version is the same as the new one
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
           GuidToFilename(Author.Guid, TDelphiBooksTable.Authors,
           CDBFileExtension)), AddNewLineToJSONAsString(Author.ToJSONObject(true)
@@ -261,6 +263,7 @@ begin
     for Publisher in Publishers do
       if (FOnlyChanged and Publisher.hasChanged) or (not FOnlyChanged) then
       begin
+        // TODO : don't save a file where previous version is the same as the new one
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
           GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers,
           CDBFileExtension)),
@@ -273,6 +276,7 @@ begin
     for Book in Books do
       if (FOnlyChanged and Book.hasChanged) or (not FOnlyChanged) then
       begin
+        // TODO : don't save a file where previous version is the same as the new one
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
           GuidToFilename(Book.Guid, TDelphiBooksTable.Books, CDBFileExtension)),
           AddNewLineToJSONAsString(Book.ToJSONObject(true).ToJSON),
@@ -284,6 +288,7 @@ begin
     for Language in Languages do
       if (FOnlyChanged and Language.hasChanged) or (not FOnlyChanged) then
       begin
+        // TODO : don't save a file where previous version is the same as the new one
         tfile.WriteAllText(tpath.Combine(DatabaseFolder,
           GuidToFilename(Language.Guid, TDelphiBooksTable.Languages,
           CDBFileExtension)),
@@ -343,6 +348,7 @@ end;
 procedure TDelphiBooksItemHelper.SetId(AID: integer);
 begin
   fid := AID;
+  FHasChanged := true;
 end;
 
 function AddNewLineToJSONAsString(JSON: string): string;
