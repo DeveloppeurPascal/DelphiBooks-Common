@@ -48,7 +48,7 @@ type
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; virtual;
 
-    function ToString: string; virtual;
+    function ToString: string; override;
   end;
 
   TDelphiBooksList<T: TDelphiBooksItem, constructor> = class(TList<T>)
@@ -62,6 +62,8 @@ type
     function GetItemByID(AID: integer): T;
     function GetItemByGUID(AGuid: string): T;
     function GetMaxID: integer;
+    procedure SortById;
+    procedure SortByIdDesc;
   end;
 
   TDelphiBooksObjectList<T: TDelphiBooksItem, constructor> = class
@@ -76,6 +78,8 @@ type
     function GetItemByID(AID: integer): T;
     function GetItemByGUID(AGuid: string): T;
     function GetMaxID: integer;
+    procedure SortById;
+    procedure SortByIdDesc;
   end;
 
   TDelphiBooksTextItem = class(TDelphiBooksItem)
@@ -170,10 +174,14 @@ type
 
   TDelphiBooksLanguagesList = class
     (TDelphiBooksTextItemsList<TDelphiBooksLanguage>)
+  public
+    procedure SortByText;
   end;
 
   TDelphiBooksLanguagesObjectList = class
     (TDelphiBooksTextItemsObjectList<TDelphiBooksLanguage>)
+  public
+    procedure SortByText;
   end;
 
   TDelphiBooksAuthorShort = class(TDelphiBooksItem)
@@ -328,10 +336,14 @@ type
   end;
 
   TDelphiBooksPublishersList = class(TDelphiBooksList<TDelphiBooksPublisher>)
+  public
+    procedure SortByCompanyName;
   end;
 
   TDelphiBooksPublishersObjectList = class
     (TDelphiBooksObjectList<TDelphiBooksPublisher>)
+  public
+    procedure SortByCompanyName;
   end;
 
   TDelphiBooksBookShort = class(TDelphiBooksItem)
@@ -374,6 +386,7 @@ type
   public
     procedure SortByTitle;
     procedure SortByPublishedDate;
+    procedure SortByPublishedDateDesc;
   end;
 
   TDelphiBooksBookShortsObjectList = class
@@ -383,6 +396,7 @@ type
   public
     procedure SortByTitle;
     procedure SortByPublishedDate;
+    procedure SortByPublishedDateDesc;
   end;
 
   TDelphiBooksBook = class(TDelphiBooksBookShort)
@@ -507,6 +521,9 @@ type
   public
     function GetBookByISBN10(AISBN10: string): TDelphiBooksBook;
     function GetBookByISBN13(AISBN13: string): TDelphiBooksBook;
+    procedure SortByTitle;
+    procedure SortByPublishedDate;
+    procedure SortByPublishedDateDesc;
   end;
 
   TDelphiBooksBooksObjectList = class(TDelphiBooksObjectList<TDelphiBooksBook>)
@@ -515,6 +532,9 @@ type
   public
     function GetBookByISBN10(AISBN10: string): TDelphiBooksBook;
     function GetBookByISBN13(AISBN13: string): TDelphiBooksBook;
+    procedure SortByTitle;
+    procedure SortByPublishedDate;
+    procedure SortByPublishedDateDesc;
   end;
 
 implementation
@@ -574,7 +594,7 @@ begin
   if not AJSON.TryGetValue<boolean>('ispagetobuild', FIsPageToBuild) then
     FIsPageToBuild := false;
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 function TDelphiBooksItem.Getguid: string;
@@ -705,9 +725,37 @@ var
   i: integer;
 begin
   result := CDelphiBooksNullID;
-  for i := 0 to Count-1 do
+  for i := 0 to Count - 1 do
     if items[i].Id > result then
       result := items[i].Id;
+end;
+
+procedure TDelphiBooksList<T>.SortById;
+begin
+  Sort(TComparer<T>.Construct(
+    function(const a, b: T): integer
+    begin
+      if a.Id = b.Id then
+        result := 0
+      else if a.Id > b.Id then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksList<T>.SortByIdDesc;
+begin
+  Sort(TComparer<T>.Construct(
+    function(const a, b: T): integer
+    begin
+      if a.Id = b.Id then
+        result := 0
+      else if a.Id < b.Id then
+        result := 1
+      else
+        result := -1;
+    end));
 end;
 
 function TDelphiBooksList<T>.ToJSONArray(ForDelphiBooksRepository: boolean)
@@ -724,7 +772,7 @@ end;
 { TDelphiBooksObjectList<T> }
 
 constructor TDelphiBooksObjectList<T>.CreateFromJSON(AJSON: TJSONArray;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 var
   jsv: tjsonvalue;
 begin
@@ -772,9 +820,37 @@ var
   i: integer;
 begin
   result := CDelphiBooksNullID;
-  for i := 0 to Count-1 do
+  for i := 0 to Count - 1 do
     if items[i].Id > result then
       result := items[i].Id;
+end;
+
+procedure TDelphiBooksObjectList<T>.SortById;
+begin
+  Sort(TComparer<T>.Construct(
+    function(const a, b: T): integer
+    begin
+      if a.Id = b.Id then
+        result := 0
+      else if a.Id > b.Id then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksObjectList<T>.SortByIdDesc;
+begin
+  Sort(TComparer<T>.Construct(
+    function(const a, b: T): integer
+    begin
+      if a.Id = b.Id then
+        result := 0
+      else if a.Id < b.Id then
+        result := 1
+      else
+        result := -1;
+    end));
 end;
 
 function TDelphiBooksObjectList<T>.ToJSONArray(ForDelphiBooksRepository
@@ -797,13 +873,13 @@ begin
 end;
 
 constructor TDelphiBooksAuthorShort.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 begin
   inherited;
   if not AJSON.TryGetValue<string>('name', FName) then
     FName := '';
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 function TDelphiBooksAuthorShort.GetClassDataVersion: integer;
@@ -839,13 +915,13 @@ begin
 end;
 
 constructor TDelphiBooksPublisherShort.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 begin
   inherited;
   if not AJSON.TryGetValue<string>('label', FCompanyName) then
     FCompanyName := '';
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 function TDelphiBooksPublisherShort.GetClassDataVersion: integer;
@@ -884,7 +960,7 @@ begin
 end;
 
 constructor TDelphiBooksBookShort.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 begin
   inherited;
   if not AJSON.TryGetValue<string>('name', FTitle) then
@@ -896,7 +972,7 @@ begin
   if not AJSON.TryGetValue<string>('thumb', FCoverThumbURL) then
     FCoverThumbURL := '';
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 function TDelphiBooksBookShort.GetClassDataVersion: integer;
@@ -966,7 +1042,7 @@ begin
 end;
 
 constructor TDelphiBooksTextItem.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 begin
   inherited;
   if not AJSON.TryGetValue<string>('lang', FLanguageISOCode) then
@@ -975,7 +1051,7 @@ begin
   if not AJSON.TryGetValue<string>('text', FText) then
     FText := '';
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 function TDelphiBooksTextItem.GetClassDataVersion: integer;
@@ -1032,7 +1108,7 @@ begin
 end;
 
 constructor TDelphiBooksAuthor.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 var
   jsa: TJSONArray;
 begin
@@ -1066,7 +1142,7 @@ begin
       AFromRepository);
   end;
 
-  Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 destructor TDelphiBooksAuthor.Destroy;
@@ -1163,7 +1239,7 @@ begin
 end;
 
 constructor TDelphiBooksPublisher.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 var
   jsa: TJSONArray;
 begin
@@ -1185,7 +1261,7 @@ begin
       AFromRepository);
   end;
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 destructor TDelphiBooksPublisher.Destroy;
@@ -1266,7 +1342,7 @@ begin
 end;
 
 constructor TDelphiBooksBook.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+AFromRepository: boolean);
 var
   jsa: TJSONArray;
 begin
@@ -1373,7 +1449,7 @@ begin
       AFromRepository);
   end;
 
-      Fhaschanged := false;
+  FHasChanged := false;
 end;
 
 destructor TDelphiBooksBook.Destroy;
@@ -1764,13 +1840,27 @@ end;
 { TDelphiBooksBookShortsList }
 
 procedure TDelphiBooksBookShortsList.SortByPublishedDate;
-begin
+begin // TODO : add the title as second field
   Sort(TComparer<TDelphiBooksBookShort>.Construct(
     function(const a, b: TDelphiBooksBookShort): integer
     begin
       if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
         result := 0
       else if a.PublishedDateYYYYMMDD > b.PublishedDateYYYYMMDD then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksBookShortsList.SortByPublishedDateDesc;
+begin // TODO : add the title as second field
+  Sort(TComparer<TDelphiBooksBookShort>.Construct(
+    function(const a, b: TDelphiBooksBookShort): integer
+    begin
+      if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
+        result := 0
+      else if a.PublishedDateYYYYMMDD < b.PublishedDateYYYYMMDD then
         result := 1
       else
         result := -1;
@@ -1794,13 +1884,27 @@ end;
 { TDelphiBooksBookShortsObjectList }
 
 procedure TDelphiBooksBookShortsObjectList.SortByPublishedDate;
-begin
+begin // TODO : add the title as second field
   Sort(TComparer<TDelphiBooksBookShort>.Construct(
     function(const a, b: TDelphiBooksBookShort): integer
     begin
       if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
         result := 0
       else if a.PublishedDateYYYYMMDD > b.PublishedDateYYYYMMDD then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksBookShortsObjectList.SortByPublishedDateDesc;
+begin // TODO : add the title as second field
+  Sort(TComparer<TDelphiBooksBookShort>.Construct(
+    function(const a, b: TDelphiBooksBookShort): integer
+    begin
+      if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
+        result := 0
+      else if a.PublishedDateYYYYMMDD < b.PublishedDateYYYYMMDD then
         result := 1
       else
         result := -1;
@@ -1853,6 +1957,48 @@ begin
       end;
 end;
 
+procedure TDelphiBooksBooksList.SortByPublishedDate;
+begin // TODO : add the title as second field
+  Sort(TComparer<TDelphiBooksBook>.Construct(
+    function(const a, b: TDelphiBooksBook): integer
+    begin
+      if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
+        result := 0
+      else if a.PublishedDateYYYYMMDD > b.PublishedDateYYYYMMDD then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksBooksList.SortByPublishedDateDesc;
+begin // TODO : add the title as second field
+  Sort(TComparer<TDelphiBooksBook>.Construct(
+    function(const a, b: TDelphiBooksBook): integer
+    begin
+      if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
+        result := 0
+      else if a.PublishedDateYYYYMMDD < b.PublishedDateYYYYMMDD then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksBooksList.SortByTitle;
+begin
+  Sort(TComparer<TDelphiBooksBook>.Construct(
+    function(const a, b: TDelphiBooksBook): integer
+    begin
+      if a.Title = b.Title then
+        result := 0
+      else if a.Title > b.Title then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
 { TDelphiBooksBooksObjectList }
 
 function TDelphiBooksBooksObjectList.GetBookByISBN10(AISBN10: string)
@@ -1885,6 +2031,48 @@ begin
       end;
 end;
 
+procedure TDelphiBooksBooksObjectList.SortByPublishedDate;
+begin // TODO : add the title as second field
+  Sort(TComparer<TDelphiBooksBook>.Construct(
+    function(const a, b: TDelphiBooksBook): integer
+    begin
+      if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
+        result := 0
+      else if a.PublishedDateYYYYMMDD > b.PublishedDateYYYYMMDD then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksBooksObjectList.SortByPublishedDateDesc;
+begin // TODO : add the title as second field
+  Sort(TComparer<TDelphiBooksBook>.Construct(
+    function(const a, b: TDelphiBooksBook): integer
+    begin
+      if a.PublishedDateYYYYMMDD = b.PublishedDateYYYYMMDD then
+        result := 0
+      else if a.PublishedDateYYYYMMDD < b.PublishedDateYYYYMMDD then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksBooksObjectList.SortByTitle;
+begin
+  Sort(TComparer<TDelphiBooksBook>.Construct(
+    function(const a, b: TDelphiBooksBook): integer
+    begin
+      if a.Title = b.Title then
+        result := 0
+      else if a.Title > b.Title then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
 { TDelphiBooksKeyword }
 
 function TDelphiBooksKeyword.hasID: boolean;
@@ -1907,6 +2095,70 @@ end;
 function TDelphiBooksLanguage.hasURL: boolean;
 begin
   result := true;
+end;
+
+{ TDelphiBooksLanguagesList }
+
+procedure TDelphiBooksLanguagesList.SortByText;
+begin
+  Sort(TComparer<TDelphiBooksLanguage>.Construct(
+    function(const a, b: TDelphiBooksLanguage): integer
+    begin
+      if a.Text = b.Text then
+        result := 0
+      else if a.Text > b.Text then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksLanguagesObjectList }
+
+procedure TDelphiBooksLanguagesObjectList.SortByText;
+begin
+  Sort(TComparer<TDelphiBooksLanguage>.Construct(
+    function(const a, b: TDelphiBooksLanguage): integer
+    begin
+      if a.Text = b.Text then
+        result := 0
+      else if a.Text > b.Text then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksPublishersList }
+
+procedure TDelphiBooksPublishersList.SortByCompanyName;
+begin
+  Sort(TComparer<TDelphiBooksPublisher>.Construct(
+    function(const a, b: TDelphiBooksPublisher): integer
+    begin
+      if a.CompanyName = b.CompanyName then
+        result := 0
+      else if a.CompanyName > b.CompanyName then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksPublishersObjectList }
+
+procedure TDelphiBooksPublishersObjectList.SortByCompanyName;
+begin
+  Sort(TComparer<TDelphiBooksPublisher>.Construct(
+    function(const a, b: TDelphiBooksPublisher): integer
+    begin
+      if a.CompanyName = b.CompanyName then
+        result := 0
+      else if a.CompanyName > b.CompanyName then
+        result := 1
+      else
+        result := -1;
+    end));
 end;
 
 end.
