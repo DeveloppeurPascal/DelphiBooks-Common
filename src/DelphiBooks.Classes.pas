@@ -897,8 +897,7 @@ function TDelphiBooksAuthorShort.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  if not ForDelphiBooksRepository then
-    result.AddPair('name', Name);
+  result.AddPair('name', Name);
 end;
 
 function TDelphiBooksAuthorShort.ToString: string;
@@ -939,8 +938,7 @@ function TDelphiBooksPublisherShort.ToJSONObject(ForDelphiBooksRepository
   : boolean): TJSONObject;
 begin
   result := inherited;
-  if not ForDelphiBooksRepository then
-    result.AddPair('label', CompanyName);
+  result.AddPair('label', CompanyName);
 end;
 
 function TDelphiBooksPublisherShort.ToString: string;
@@ -968,7 +966,7 @@ begin
   if not AJSON.TryGetValue<string>('lang', FLanguageISOCode) then
     FLanguageISOCode := 'EN';
   if not AJSON.TryGetValue<string>('pubdate', FPublishedDateYYYYMMDD) then
-    FPublishedDateYYYYMMDD := '';
+    FPublishedDateYYYYMMDD := '00000000';
   if not AJSON.TryGetValue<string>('thumb', FCoverThumbURL) then
     FCoverThumbURL := '';
 
@@ -1018,13 +1016,10 @@ function TDelphiBooksBookShort.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  if not ForDelphiBooksRepository then
-  begin
-    result.AddPair('name', Title);
-    result.AddPair('lang', LanguageISOCode);
-    result.AddPair('pubdate', PublishedDateYYYYMMDD);
-    result.AddPair('thumb', CoverThumbURL);
-  end;
+  result.AddPair('name', Title);
+  result.AddPair('lang', LanguageISOCode);
+  result.AddPair('pubdate', PublishedDateYYYYMMDD);
+  result.AddPair('thumb', CoverThumbURL);
 end;
 
 function TDelphiBooksBookShort.ToString: string;
@@ -1352,66 +1347,47 @@ begin
   if not AJSON.TryGetValue<string>('isbn13', FISBN13) then
     FISBN13 := '';
   if not AJSON.TryGetValue<string>('website', FWebSiteURL) then
-  else
     FWebSiteURL := '';
 
   if not AJSON.TryGetValue<string>('cover', FCoverURL) then
-  else
     FCoverURL := '';
 
   if not AJSON.TryGetValue<string>('cover_100w', FCover100pxWidthURL) then
-  else
     FCover100pxWidthURL := '';
   if not AJSON.TryGetValue<string>('cover_150w', FCover150pxWidthURL) then
-  else
     FCover150pxWidthURL := '';
   if not AJSON.TryGetValue<string>('cover_200w', FCover200pxWidthURL) then
-  else
     FCover200pxWidthURL := '';
   if not AJSON.TryGetValue<string>('cover_300w', FCover300pxWidthURL) then
-  else
     FCover300pxWidthURL := '';
   if not AJSON.TryGetValue<string>('cover_400w', FCover400pxWidthURL) then
-  else
     FCover400pxWidthURL := '';
   if not AJSON.TryGetValue<string>('cover_500w', FCover500pxWidthURL) then
-  else
     FCover500pxWidthURL := '';
 
   if not AJSON.TryGetValue<string>('cover_100h', FCover100pxHeightURL) then
-  else
     FCover100pxHeightURL := '';
   if not AJSON.TryGetValue<string>('cover_200h', FCover200pxHeightURL) then
-  else
     FCover200pxHeightURL := '';
   if not AJSON.TryGetValue<string>('cover_300h', FCover300pxHeightURL) then
-  else
     FCover300pxHeightURL := '';
   if not AJSON.TryGetValue<string>('cover_400h', FCover400pxHeightURL) then
-  else
     FCover400pxHeightURL := '';
   if not AJSON.TryGetValue<string>('cover_500h', FCover500pxHeightURL) then
-  else
     FCover500pxHeightURL := '';
 
   if not AJSON.TryGetValue<string>('cover_100x100', FCover100pxSquareURL) then
-  else
     FCover100pxSquareURL := '';
   if not AJSON.TryGetValue<string>('cover_200x200', FCover200pxSquareURL) then
-  else
     FCover200pxSquareURL := '';
   if not AJSON.TryGetValue<string>('cover_300x300', FCover300pxSquareURL) then
-  else
     FCover300pxSquareURL := '';
   if not AJSON.TryGetValue<string>('cover_400x400', FCover400pxSquareURL) then
-  else
     FCover400pxSquareURL := '';
   if not AJSON.TryGetValue<string>('cover_500x500', FCover500pxSquareURL) then
-  else
     FCover500pxSquareURL := '';
 
   if not AJSON.TryGetValue<string>('cover_130x110', FCover130x110pxURL) then
-  else
     FCover130x110pxURL := '';
 
   if AJSON.TryGetValue<TJSONArray>('authors', jsa) then
