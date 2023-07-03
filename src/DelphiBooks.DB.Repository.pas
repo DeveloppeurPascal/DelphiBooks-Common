@@ -39,12 +39,28 @@ type
     property DatabaseFolder: string read FDatabaseFolder;
     constructor Create; virtual;
     destructor Destroy; override;
-    constructor CreateFromRepository(AFolder: string); virtual;
-    procedure SaveToRepository(AFolder: string = '';
-      FOnlyChanged: boolean = true); virtual;
     procedure CheckRepositoryLevelInFolder(AFolder: string);
+    function isPageNameUniq(APageName: string; ATable: TDelphiBooksTable;
+      ACurItem: TDelphiBooksItem): boolean;
     function GuidToFilename(AGuid: string; ATable: TDelphiBooksTable;
       AFileExtension: string): string;
+    constructor CreateFromRepository(ARepositoryFolder: string); virtual;
+    procedure SaveToRepository(AFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
+    procedure LoadAuthorsFromRepository(ADatabaseFolder: string = ''); virtual;
+    procedure SaveAuthorsToRepository(ADatabaseFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
+    procedure LoadPublishersFromRepository(ADatabaseFolder
+      : string = ''); virtual;
+    procedure SavePublishersToRepository(ADatabaseFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
+    procedure LoadBooksFromRepository(ADatabaseFolder: string = ''); virtual;
+    procedure SaveBooksToRepository(ADatabaseFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
+    procedure LoadLanguagesFromRepository(ADatabaseFolder
+      : string = ''); virtual;
+    procedure SaveLanguagesToRepository(ADatabaseFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
   end;
 
   TDelphiBooksItemHelper = class helper for TDelphiBooksItem
@@ -95,48 +111,25 @@ begin
 {$ENDIF}
 end;
 
-constructor TDelphiBooksDatabase.CreateFromRepository(AFolder: string);
+constructor TDelphiBooksDatabase.CreateFromRepository(ARepositoryFolder
+  : string);
 var
   DatabaseFolder: string;
-  Files: TStringDynArray;
-  i: integer;
 begin
-  CheckRepositoryLevelInFolder(AFolder);
+  CheckRepositoryLevelInFolder(ARepositoryFolder);
 
-  DatabaseFolder := tpath.Combine(tpath.Combine(AFolder, 'database'), 'datas');
+  DatabaseFolder := tpath.Combine(tpath.Combine(ARepositoryFolder,
+    'database'), 'datas');
   if not tdirectory.exists(DatabaseFolder) then
     raise exception.Create
       ('The database folder doesn''t exist in the repository folders tree.');
 
   Create;
 
-  // Load all authors
-  Files := tdirectory.getfiles(DatabaseFolder, 'a-*' + CDBFileExtension);
-  Authors.clear;
-  if (length(Files) > 0) then
-    for i := 0 to length(Files) - 1 do
-      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Authors);
-
-  // Load all publishers
-  Files := tdirectory.getfiles(DatabaseFolder, 'p-*' + CDBFileExtension);
-  Publishers.clear;
-  if (length(Files) > 0) then
-    for i := 0 to length(Files) - 1 do
-      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Publishers);
-
-  // Load all books
-  Files := tdirectory.getfiles(DatabaseFolder, 'b-*' + CDBFileExtension);
-  Books.clear;
-  if (length(Files) > 0) then
-    for i := 0 to length(Files) - 1 do
-      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Books);
-
-  // Load all languages
-  Files := tdirectory.getfiles(DatabaseFolder, 'l-*' + CDBFileExtension);
-  Languages.clear;
-  if (length(Files) > 0) then
-    for i := 0 to length(Files) - 1 do
-      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Languages);
+  LoadAuthorsFromRepository(DatabaseFolder);
+  LoadPublishersFromRepository(DatabaseFolder);
+  LoadBooksFromRepository(DatabaseFolder);
+  LoadLanguagesFromRepository(DatabaseFolder);
 
   // All is good, we save the database repository folder
   FDatabaseFolder := DatabaseFolder;
@@ -222,14 +215,198 @@ begin
   result := result + '.' + AFileExtension;
 end;
 
+function TDelphiBooksDatabase.isPageNameUniq(APageName: string;
+  ATable: TDelphiBooksTable; ACurItem: TDelphiBooksItem): boolean;
+var
+  l: tdelphibookslanguage;
+  b: tdelphibooksbook;
+  p: tdelphibookspublisher;
+  a: tdelphibooksauthor;
+begin
+  result := true;
+
+  if (Languages.Count > 0) then
+    for l in Languages do
+      if (l.PageName = APageName) and
+        ((ATable <> TDelphiBooksTable.Languages) or (l <> ACurItem)) then
+      begin
+        result := false;
+        exit;
+      end;
+
+  if (Authors.Count > 0) then
+    for a in Authors do
+      if (a.PageName = APageName) and ((ATable <> TDelphiBooksTable.Authors) or
+        (a <> ACurItem)) then
+      begin
+        result := false;
+        exit;
+      end;
+
+  if (Books.Count > 0) then
+    for b in Books do
+      if (b.PageName = APageName) and ((ATable <> TDelphiBooksTable.Books) or
+        (b <> ACurItem)) then
+      begin
+        result := false;
+        exit;
+      end;
+
+  if (Publishers.Count > 0) then
+    for p in Publishers do
+      if (p.PageName = APageName) and
+        ((ATable <> TDelphiBooksTable.Publishers) or (p <> ACurItem)) then
+      begin
+        result := false;
+        exit;
+      end;
+end;
+
+procedure TDelphiBooksDatabase.LoadAuthorsFromRepository
+  (ADatabaseFolder: string);
+var
+  Files: TStringDynArray;
+  i: integer;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  Files := tdirectory.getfiles(ADatabaseFolder, 'a-*' + CDBFileExtension);
+  Authors.clear;
+  if (length(Files) > 0) then
+    for i := 0 to length(Files) - 1 do
+      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Authors);
+end;
+
+procedure TDelphiBooksDatabase.LoadBooksFromRepository(ADatabaseFolder: string);
+var
+  Files: TStringDynArray;
+  i: integer;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  Files := tdirectory.getfiles(ADatabaseFolder, 'b-*' + CDBFileExtension);
+  Books.clear;
+  if (length(Files) > 0) then
+    for i := 0 to length(Files) - 1 do
+      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Books);
+end;
+
+procedure TDelphiBooksDatabase.LoadLanguagesFromRepository
+  (ADatabaseFolder: string);
+var
+  Files: TStringDynArray;
+  i: integer;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  Files := tdirectory.getfiles(ADatabaseFolder, 'l-*' + CDBFileExtension);
+  Languages.clear;
+  if (length(Files) > 0) then
+    for i := 0 to length(Files) - 1 do
+      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Languages);
+end;
+
+procedure TDelphiBooksDatabase.LoadPublishersFromRepository
+  (ADatabaseFolder: string);
+var
+  Files: TStringDynArray;
+  i: integer;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  Files := tdirectory.getfiles(ADatabaseFolder, 'p-*' + CDBFileExtension);
+  Publishers.clear;
+  if (length(Files) > 0) then
+    for i := 0 to length(Files) - 1 do
+      CreateRecordFromRepository(Files[i], TDelphiBooksTable.Publishers);
+end;
+
+procedure TDelphiBooksDatabase.SaveAuthorsToRepository(ADatabaseFolder: string;
+  AOnlyChanged: boolean);
+var
+  Author: tdelphibooksauthor;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  if Authors.Count > 0 then
+    for Author in Authors do
+      if (AOnlyChanged and Author.hasChanged) or (not AOnlyChanged) then
+      begin
+        // TODO : don't save a file where previous version is the same as the new one
+        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
+          GuidToFilename(Author.Guid, TDelphiBooksTable.Authors,
+          CDBFileExtension)), AddNewLineToJSONAsString(Author.ToJSONObject(true)
+          .ToJSON), tencoding.utf8);
+        Author.SetHasChanged(false);
+      end;
+end;
+
+procedure TDelphiBooksDatabase.SaveBooksToRepository(ADatabaseFolder: string;
+  AOnlyChanged: boolean);
+var
+  Book: tdelphibooksbook;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  if Books.Count > 0 then
+    for Book in Books do
+      if (AOnlyChanged and Book.hasChanged) or (not AOnlyChanged) then
+      begin
+        // TODO : don't save a file where previous version is the same as the new one
+        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
+          GuidToFilename(Book.Guid, TDelphiBooksTable.Books, CDBFileExtension)),
+          AddNewLineToJSONAsString(Book.ToJSONObject(true).ToJSON),
+          tencoding.utf8);
+        Book.SetHasChanged(false);
+      end;
+end;
+
+procedure TDelphiBooksDatabase.SaveLanguagesToRepository(ADatabaseFolder
+  : string; AOnlyChanged: boolean);
+var
+  Language: tdelphibookslanguage;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  if Languages.Count > 0 then
+    for Language in Languages do
+      if (AOnlyChanged and Language.hasChanged) or (not AOnlyChanged) then
+      begin
+        // TODO : don't save a file where previous version is the same as the new one
+        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
+          GuidToFilename(Language.Guid, TDelphiBooksTable.Languages,
+          CDBFileExtension)),
+          AddNewLineToJSONAsString(Language.ToJSONObject(true).ToJSON),
+          tencoding.utf8);
+        Language.SetHasChanged(false);
+      end;
+end;
+
+procedure TDelphiBooksDatabase.SavePublishersToRepository(ADatabaseFolder
+  : string; AOnlyChanged: boolean);
+var
+  Publisher: tdelphibookspublisher;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  if Publishers.Count > 0 then
+    for Publisher in Publishers do
+      if (AOnlyChanged and Publisher.hasChanged) or (not AOnlyChanged) then
+      begin
+        // TODO : don't save a file where previous version is the same as the new one
+        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
+          GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers,
+          CDBFileExtension)),
+          AddNewLineToJSONAsString(Publisher.ToJSONObject(true).ToJSON),
+          tencoding.utf8);
+        Publisher.SetHasChanged(false);
+      end;
+end;
+
 procedure TDelphiBooksDatabase.SaveToRepository(AFolder: string;
-  FOnlyChanged: boolean);
+  AOnlyChanged: boolean);
 var
   DatabaseFolder: string;
-  Author: tdelphibooksauthor;
-  Publisher: tdelphibookspublisher;
-  Book: tdelphibooksbook;
-  Language: tdelphibookslanguage;
 begin
   if not AFolder.isempty then
   begin
@@ -247,55 +424,10 @@ begin
     raise exception.Create
       ('The database folder doesn''t exist in the repository folders tree.');
 
-  if Authors.Count > 0 then
-    for Author in Authors do
-      if (FOnlyChanged and Author.hasChanged) or (not FOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Author.Guid, TDelphiBooksTable.Authors,
-          CDBFileExtension)), AddNewLineToJSONAsString(Author.ToJSONObject(true)
-          .ToJSON), tencoding.utf8);
-        Author.SetHasChanged(false);
-      end;
-
-  if Publishers.Count > 0 then
-    for Publisher in Publishers do
-      if (FOnlyChanged and Publisher.hasChanged) or (not FOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers,
-          CDBFileExtension)),
-          AddNewLineToJSONAsString(Publisher.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
-        Publisher.SetHasChanged(false);
-      end;
-
-  if Books.Count > 0 then
-    for Book in Books do
-      if (FOnlyChanged and Book.hasChanged) or (not FOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Book.Guid, TDelphiBooksTable.Books, CDBFileExtension)),
-          AddNewLineToJSONAsString(Book.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
-        Book.SetHasChanged(false);
-      end;
-
-  if Languages.Count > 0 then
-    for Language in Languages do
-      if (FOnlyChanged and Language.hasChanged) or (not FOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(DatabaseFolder,
-          GuidToFilename(Language.Guid, TDelphiBooksTable.Languages,
-          CDBFileExtension)),
-          AddNewLineToJSONAsString(Language.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
-        Language.SetHasChanged(false);
-      end;
+  SaveAuthorsToRepository(DatabaseFolder, AOnlyChanged);
+  SavePublishersToRepository(DatabaseFolder, AOnlyChanged);
+  SaveBooksToRepository(DatabaseFolder, AOnlyChanged);
+  SaveLanguagesToRepository(DatabaseFolder, AOnlyChanged);
 end;
 
 procedure TDelphiBooksDatabase.CheckRepositoryLevelInFolder(AFolder: string);
