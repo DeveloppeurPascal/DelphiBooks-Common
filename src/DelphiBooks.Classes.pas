@@ -136,10 +136,16 @@ type
 
   TDelphiBooksKeywordsList = class
     (TDelphiBooksTextItemsList<TDelphiBooksKeyword>)
+  public
+    procedure SortByText;
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksKeywordsObjectList = class
     (TDelphiBooksTextItemsObjectList<TDelphiBooksKeyword>)
+  public
+    procedure SortByText;
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksDescription = class(TDelphiBooksTextItem)
@@ -147,10 +153,14 @@ type
 
   TDelphiBooksDescriptionsList = class
     (TDelphiBooksTextItemsList<TDelphiBooksDescription>)
+  public
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksDescriptionsObjectList = class
     (TDelphiBooksTextItemsObjectList<TDelphiBooksDescription>)
+  public
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksTableOfContent = class(TDelphiBooksTextItem)
@@ -158,10 +168,14 @@ type
 
   TDelphiBooksTableOfContentsList = class
     (TDelphiBooksTextItemsList<TDelphiBooksTableOfContent>)
+  public
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksTableOfContentsObjectList = class
     (TDelphiBooksTextItemsObjectList<TDelphiBooksTableOfContent>)
+  public
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksLanguage = class(TDelphiBooksTextItem)
@@ -176,12 +190,14 @@ type
     (TDelphiBooksTextItemsList<TDelphiBooksLanguage>)
   public
     procedure SortByText;
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksLanguagesObjectList = class
     (TDelphiBooksTextItemsObjectList<TDelphiBooksLanguage>)
   public
     procedure SortByText;
+    procedure SortByISOCode;
   end;
 
   TDelphiBooksAuthorShort = class(TDelphiBooksItem)
@@ -2075,6 +2091,20 @@ end;
 
 { TDelphiBooksLanguagesList }
 
+procedure TDelphiBooksLanguagesList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksLanguage>.Construct(
+    function(const a, b: TDelphiBooksLanguage): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
 procedure TDelphiBooksLanguagesList.SortByText;
 begin
   Sort(TComparer<TDelphiBooksLanguage>.Construct(
@@ -2090,6 +2120,20 @@ begin
 end;
 
 { TDelphiBooksLanguagesObjectList }
+
+procedure TDelphiBooksLanguagesObjectList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksLanguage>.Construct(
+    function(const a, b: TDelphiBooksLanguage): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
 
 procedure TDelphiBooksLanguagesObjectList.SortByText;
 begin
@@ -2131,6 +2175,130 @@ begin
       if a.CompanyName = b.CompanyName then
         result := 0
       else if a.CompanyName > b.CompanyName then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksKeywordsList }
+
+procedure TDelphiBooksKeywordsList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksKeyword>.Construct(
+    function(const a, b: TDelphiBooksKeyword): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksKeywordsList.SortByText;
+begin
+  Sort(TComparer<TDelphiBooksKeyword>.Construct(
+    function(const a, b: TDelphiBooksKeyword): integer
+    begin
+      if a.Text = b.Text then
+        result := 0
+      else if a.Text > b.Text then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksKeywordsObjectList }
+
+procedure TDelphiBooksKeywordsObjectList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksKeyword>.Construct(
+    function(const a, b: TDelphiBooksKeyword): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksKeywordsObjectList.SortByText;
+begin
+  Sort(TComparer<TDelphiBooksKeyword>.Construct(
+    function(const a, b: TDelphiBooksKeyword): integer
+    begin
+      if a.Text = b.Text then
+        result := 0
+      else if a.Text > b.Text then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksDescriptionsList }
+
+procedure TDelphiBooksDescriptionsList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksDescription>.Construct(
+    function(const a, b: TDelphiBooksDescription): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksDescriptionsObjectList }
+
+procedure TDelphiBooksDescriptionsObjectList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksDescription>.Construct(
+    function(const a, b: TDelphiBooksDescription): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksTableOfContentsList }
+
+procedure TDelphiBooksTableOfContentsList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksTableOfContent>.Construct(
+    function(const a, b: TDelphiBooksTableOfContent): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksTableOfContentsObjectList }
+
+procedure TDelphiBooksTableOfContentsObjectList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksTableOfContent>.Construct(
+    function(const a, b: TDelphiBooksTableOfContent): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
         result := 1
       else
         result := -1;
