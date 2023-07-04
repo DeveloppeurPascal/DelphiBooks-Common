@@ -643,12 +643,18 @@ end;
 
 procedure TDelphiBooksItem.SetPageName(const Value: string);
 begin
+  if FPageName = Value then
+    exit;
+
   FPageName := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksItem.SetURL(const Value: string);
 begin
+  if FURL = Value then
+    exit;
+
   FURL := Value;
   ValuesChanged;
 end;
@@ -905,6 +911,9 @@ end;
 
 procedure TDelphiBooksAuthorShort.SetName(const Value: string);
 begin
+  if FName = Value then
+    exit;
+
   FName := Value;
   ValuesChanged;
 end;
@@ -946,6 +955,9 @@ end;
 
 procedure TDelphiBooksPublisherShort.SetCompanyName(const Value: string);
 begin
+  if FCompanyName = Value then
+    exit;
+
   FCompanyName := Value;
   ValuesChanged;
 end;
@@ -1006,24 +1018,36 @@ end;
 
 procedure TDelphiBooksBookShort.SetCoverThumbURL(const Value: string);
 begin
+  if FCoverThumbURL = Value then
+    exit;
+
   FCoverThumbURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBookShort.SetLanguageISOCode(const Value: string);
 begin
+  if FLanguageISOCode = Value then
+    exit;
+
   FLanguageISOCode := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBookShort.SetPublishedDateYYYYMMDD(const Value: string);
 begin
+  if FPublishedDateYYYYMMDD = Value then
+    exit;
+
   FPublishedDateYYYYMMDD := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBookShort.SetTitle(const Value: string);
 begin
+  if FTitle = Value then
+    exit;
+
   FTitle := Value;
   ValuesChanged;
 end;
@@ -1082,12 +1106,18 @@ end;
 
 procedure TDelphiBooksTextItem.SetLanguageISOCode(const Value: string);
 begin
+  if FLanguageISOCode = Value then
+    exit;
+
   FLanguageISOCode := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksTextItem.SetText(const Value: string);
 begin
+  if FText = Value then
+    exit;
+
   FText := Value;
   ValuesChanged;
 end;
@@ -1179,6 +1209,9 @@ end;
 procedure TDelphiBooksAuthor.SetBooks(const Value
   : TDelphiBooksBookShortsObjectList);
 begin
+  if FBooks = Value then
+    exit;
+
   FBooks := Value;
   ValuesChanged;
 end;
@@ -1186,30 +1219,45 @@ end;
 procedure TDelphiBooksAuthor.SetDescriptions(const Value
   : TDelphiBooksDescriptionsObjectList);
 begin
+  if FDescriptions = Value then
+    exit;
+
   FDescriptions := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksAuthor.SetFirstName(const Value: string);
 begin
+  if FFirstName = Value then
+    exit;
+
   FFirstName := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksAuthor.SetLastName(const Value: string);
 begin
+  if FLastName = Value then
+    exit;
+
   FLastName := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksAuthor.SetPseudo(const Value: string);
 begin
+  if FPseudo = Value then
+    exit;
+
   FPseudo := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksAuthor.SetWebSiteURL(const Value: string);
 begin
+  if FWebSiteURL = Value then
+    exit;
+
   FWebSiteURL := Value;
   ValuesChanged;
 end;
@@ -1290,6 +1338,9 @@ end;
 procedure TDelphiBooksPublisher.SetBooks(const Value
   : TDelphiBooksBookShortsObjectList);
 begin
+  if FBooks = Value then
+    exit;
+
   FBooks := Value;
   ValuesChanged;
 end;
@@ -1297,12 +1348,18 @@ end;
 procedure TDelphiBooksPublisher.SetDescriptions(const Value
   : TDelphiBooksDescriptionsObjectList);
 begin
+  if FDescriptions = Value then
+    exit;
+
   FDescriptions := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksPublisher.SetWebSiteURL(const Value: string);
 begin
+  if FWebSiteURL = Value then
+    exit;
+
   FWebSiteURL := Value;
   ValuesChanged;
 end;
@@ -1462,114 +1519,171 @@ end;
 procedure TDelphiBooksBook.SetAuthors(const Value
   : TDelphiBooksAuthorShortsObjectList);
 begin
+  if FAuthors = Value then
+    exit;
+
   FAuthors := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover100pxHeightURL(const Value: string);
 begin
+  if FCover100pxHeightURL = Value then
+    exit;
+
   FCover100pxHeightURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover100pxSquareURL(const Value: string);
 begin
+  if FCover100pxSquareURL = Value then
+    exit;
+
   FCover100pxSquareURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover100pxWidthURL(const Value: string);
 begin
+  if FCover100pxWidthURL = Value then
+    exit;
+
   FCover100pxWidthURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover130x110pxURL(const Value: string);
 begin
+  if FCover130x110pxURL = Value then
+    exit;
+
   FCover130x110pxURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover150pxWidthURL(const Value: string);
 begin
+  if FCover150pxWidthURL = Value then
+    exit;
+
   FCover150pxWidthURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover200pxHeightURL(const Value: string);
 begin
+  if FCover200pxHeightURL = Value then
+    exit;
+
   FCover200pxHeightURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover200pxSquareURL(const Value: string);
 begin
+  if FCover200pxSquareURL = Value then
+    exit;
+
   FCover200pxSquareURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover200pxWidthURL(const Value: string);
 begin
+  if FCover200pxWidthURL = Value then
+    exit;
+
   FCover200pxWidthURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover300pxHeightURL(const Value: string);
 begin
+  if FCover300pxHeightURL = Value then
+    exit;
+
   FCover300pxHeightURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover300pxSquareURL(const Value: string);
 begin
+  if FCover300pxSquareURL = Value then
+    exit;
+
   FCover300pxSquareURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover300pxWidthURL(const Value: string);
 begin
+  if FCover300pxWidthURL = Value then
+    exit;
+
   FCover300pxWidthURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover400pxHeightURL(const Value: string);
 begin
+  if FCover400pxHeightURL = Value then
+    exit;
+
   FCover400pxHeightURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover400pxSquareURL(const Value: string);
 begin
+  if FCover400pxSquareURL = Value then
+    exit;
+
   FCover400pxSquareURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover400pxWidthURL(const Value: string);
 begin
+  if FCover400pxWidthURL = Value then
+    exit;
+
   FCover400pxWidthURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover500pxHeightURL(const Value: string);
 begin
+  if FCover500pxHeightURL = Value then
+    exit;
+
   FCover500pxHeightURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover500pxSquareURL(const Value: string);
 begin
+  if FCover500pxSquareURL = Value then
+    exit;
+
   FCover500pxSquareURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCover500pxWidthURL(const Value: string);
 begin
+  if FCover500pxWidthURL = Value then
+    exit;
+
   FCover500pxWidthURL := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetCoverURL(const Value: string);
 begin
+  if FCoverURL = Value then
+    exit;
+
   FCoverURL := Value;
   ValuesChanged;
 end;
@@ -1577,18 +1691,27 @@ end;
 procedure TDelphiBooksBook.SetDescriptions(const Value
   : TDelphiBooksDescriptionsObjectList);
 begin
+  if FDescriptions = Value then
+    exit;
+
   FDescriptions := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetISBN10(const Value: string);
 begin
+  if FISBN10 = Value then
+    exit;
+
   FISBN10 := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetISBN13(const Value: string);
 begin
+  if FISBN13 = Value then
+    exit;
+
   FISBN13 := Value;
   ValuesChanged;
 end;
@@ -1596,6 +1719,9 @@ end;
 procedure TDelphiBooksBook.SetKeywords(const Value
   : TDelphiBooksKeywordsObjectList);
 begin
+  if FKeywords = Value then
+    exit;
+
   FKeywords := Value;
   ValuesChanged;
 end;
@@ -1603,6 +1729,9 @@ end;
 procedure TDelphiBooksBook.SetPublishers(const Value
   : TDelphiBooksPublisherShortsObjectList);
 begin
+  if FPublishers = Value then
+    exit;
+
   FPublishers := Value;
   ValuesChanged;
 end;
@@ -1610,12 +1739,18 @@ end;
 procedure TDelphiBooksBook.SetTOCs(const Value
   : TDelphiBooksTableOfContentsObjectList);
 begin
+  if FTOCs = Value then
+    exit;
+
   FTOCs := Value;
   ValuesChanged;
 end;
 
 procedure TDelphiBooksBook.SetWebSiteURL(const Value: string);
 begin
+  if FWebSiteURL = Value then
+    exit;
+
   FWebSiteURL := Value;
   ValuesChanged;
 end;
