@@ -47,6 +47,9 @@ type
     constructor CreateFromRepository(ARepositoryFolder: string); virtual;
     procedure SaveToRepository(AFolder: string = '';
       AOnlyChanged: boolean = true); virtual;
+    procedure SaveItemToRepository(AItem: TDelphiBooksItem;
+      AItemTable: TDelphiBooksTable; ADatabaseFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
     procedure LoadAuthorsFromRepository(ADatabaseFolder: string = ''); virtual;
     procedure SaveAuthorsToRepository(ADatabaseFolder: string = '';
       AOnlyChanged: boolean = true); virtual;
@@ -159,11 +162,11 @@ begin
       TDelphiBooksTable.Authors:
         Authors.add(tdelphibooksauthor.createfromjson(JSO, true));
       TDelphiBooksTable.Publishers:
-        Publishers.add(tdelphibookspublisher.createfromjson(JSO, true));
+        Publishers.add(TDelphiBooksPublisher.createfromjson(JSO, true));
       TDelphiBooksTable.Books:
-        Books.add(tdelphibooksbook.createfromjson(JSO, true));
+        Books.add(TDelphiBooksBook.createfromjson(JSO, true));
       TDelphiBooksTable.Languages:
-        Languages.add(tdelphibookslanguage.createfromjson(JSO, true));
+        Languages.add(TDelphiBooksLanguage.createfromjson(JSO, true));
     end;
   finally
     JSO.Free;
@@ -220,9 +223,9 @@ end;
 function TDelphiBooksDatabase.isPageNameUniq(APageName: string;
   ATable: TDelphiBooksTable; ACurItem: TDelphiBooksItem): boolean;
 var
-  l: tdelphibookslanguage;
-  b: tdelphibooksbook;
-  p: tdelphibookspublisher;
+  l: TDelphiBooksLanguage;
+  b: TDelphiBooksBook;
+  p: TDelphiBooksPublisher;
   a: tdelphibooksauthor;
 begin
   result := true;
@@ -332,77 +335,65 @@ begin
     ADatabaseFolder := FDatabaseFolder;
   if Authors.Count > 0 then
     for Author in Authors do
-      if (AOnlyChanged and Author.hasChanged) or (not AOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
-          GuidToFilename(Author.Guid, TDelphiBooksTable.Authors,
-          CDBFileExtension)), AddNewLineToJSONAsString(Author.ToJSONObject(true)
-          .ToJSON), tencoding.utf8);
-        Author.SetHasChanged(false);
-      end;
+      SaveItemToRepository(Author, TDelphiBooksTable.Authors, ADatabaseFolder,
+        AOnlyChanged);
 end;
 
 procedure TDelphiBooksDatabase.SaveBooksToRepository(ADatabaseFolder: string;
   AOnlyChanged: boolean);
 var
-  Book: tdelphibooksbook;
+  Book: TDelphiBooksBook;
 begin
   if ADatabaseFolder.isempty then
     ADatabaseFolder := FDatabaseFolder;
   if Books.Count > 0 then
     for Book in Books do
-      if (AOnlyChanged and Book.hasChanged) or (not AOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
-          GuidToFilename(Book.Guid, TDelphiBooksTable.Books, CDBFileExtension)),
-          AddNewLineToJSONAsString(Book.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
-        Book.SetHasChanged(false);
-      end;
+      SaveItemToRepository(Book, TDelphiBooksTable.Books, ADatabaseFolder,
+        AOnlyChanged);
+end;
+
+procedure TDelphiBooksDatabase.SaveItemToRepository(AItem: TDelphiBooksItem;
+  AItemTable: TDelphiBooksTable; ADatabaseFolder: string;
+  AOnlyChanged: boolean);
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+
+  if (AOnlyChanged and AItem.hasChanged) or (not AOnlyChanged) then
+  begin
+    // TODO : don't save a file where previous version is the same as the new one
+    tfile.WriteAllText(tpath.Combine(ADatabaseFolder, GuidToFilename(AItem.Guid,
+      AItemTable, CDBFileExtension)),
+      AddNewLineToJSONAsString(AItem.ToJSONObject(true).ToJSON),
+      tencoding.utf8);
+    AItem.SetHasChanged(false);
+  end;
 end;
 
 procedure TDelphiBooksDatabase.SaveLanguagesToRepository(ADatabaseFolder
   : string; AOnlyChanged: boolean);
 var
-  Language: tdelphibookslanguage;
+  Language: TDelphiBooksLanguage;
 begin
   if ADatabaseFolder.isempty then
     ADatabaseFolder := FDatabaseFolder;
   if Languages.Count > 0 then
     for Language in Languages do
-      if (AOnlyChanged and Language.hasChanged) or (not AOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
-          GuidToFilename(Language.Guid, TDelphiBooksTable.Languages,
-          CDBFileExtension)),
-          AddNewLineToJSONAsString(Language.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
-        Language.SetHasChanged(false);
-      end;
+      SaveItemToRepository(Language, TDelphiBooksTable.Languages,
+        ADatabaseFolder, AOnlyChanged);
 end;
 
 procedure TDelphiBooksDatabase.SavePublishersToRepository(ADatabaseFolder
   : string; AOnlyChanged: boolean);
 var
-  Publisher: tdelphibookspublisher;
+  Publisher: TDelphiBooksPublisher;
 begin
   if ADatabaseFolder.isempty then
     ADatabaseFolder := FDatabaseFolder;
   if Publishers.Count > 0 then
     for Publisher in Publishers do
-      if (AOnlyChanged and Publisher.hasChanged) or (not AOnlyChanged) then
-      begin
-        // TODO : don't save a file where previous version is the same as the new one
-        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
-          GuidToFilename(Publisher.Guid, TDelphiBooksTable.Publishers,
-          CDBFileExtension)),
-          AddNewLineToJSONAsString(Publisher.ToJSONObject(true).ToJSON),
-          tencoding.utf8);
-        Publisher.SetHasChanged(false);
-      end;
+      SaveItemToRepository(Publisher, TDelphiBooksTable.Publishers,
+        ADatabaseFolder, AOnlyChanged);
 end;
 
 procedure TDelphiBooksDatabase.SaveToRepository(AFolder: string;
@@ -478,8 +469,8 @@ function TDelphiBooksItemHelper.GetImageFileName: string;
 var
   i: integer;
 begin
-  if (self is tdelphibookslanguage) then
-    result := (self as tdelphibookslanguage).languageisocode + '.gif'
+  if (self is TDelphiBooksLanguage) then
+    result := (self as TDelphiBooksLanguage).languageisocode + '.gif'
   else
   begin
     result := '';
@@ -494,10 +485,10 @@ begin
 
     if (self is tdelphibooksauthor) or (self is tdelphibooksauthorshort) then
       result := 'a-' + result + '.png'
-    else if (self is tdelphibookspublisher) or
+    else if (self is TDelphiBooksPublisher) or
       (self is tdelphibookspublishershort) then
       result := 'p-' + result + '.png'
-    else if (self is tdelphibooksbook) or (self is tdelphibooksbookshort) then
+    else if (self is TDelphiBooksBook) or (self is tdelphibooksbookshort) then
       result := 'b-' + result + '.png'
     else
       raise exception.Create('Unknow image file name for ' + self.classname);
