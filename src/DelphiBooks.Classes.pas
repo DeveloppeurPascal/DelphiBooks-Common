@@ -68,7 +68,7 @@ type
     function GetMaxID: integer;
     procedure SortById;
     procedure SortByIdDesc;
-    constructor Create; override;
+    constructor Create;
   end;
 
   TDelphiBooksObjectList<T: TDelphiBooksItem, constructor> = class
@@ -88,7 +88,7 @@ type
     function GetMaxID: integer;
     procedure SortById;
     procedure SortByIdDesc;
-    constructor Create; override;
+    constructor Create;
   end;
 
   TDelphiBooksTextItem = class(TDelphiBooksItem)
@@ -1097,7 +1097,7 @@ function TDelphiBooksBookShort.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  if name <> '' then
+  if Title <> '' then
     result.AddPair('name', Title);
   if LanguageISOCode <> '' then
     result.AddPair('lang', LanguageISOCode);
@@ -1224,7 +1224,7 @@ begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
       AFromRepository);
-    fdescription.Parent := self;
+    FDescriptions.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('books', jsa) then
