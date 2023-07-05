@@ -475,6 +475,8 @@ end;
 { TDelphiBooksItemHelper }
 
 function TDelphiBooksItemHelper.GetImageFileName: string;
+var
+  i: integer;
 begin
   if (self is tdelphibookslanguage) then
     result := (self as tdelphibookslanguage).languageisocode + '.gif'
@@ -498,7 +500,7 @@ begin
     else if (self is tdelphibooksbook) or (self is tdelphibooksbookshort) then
       result := 'b-' + result + '.png'
     else
-      raise exception.Create('Unknow image file name for '.self.classname);
+      raise exception.Create('Unknow image file name for ' + self.classname);
   end;
 end;
 
