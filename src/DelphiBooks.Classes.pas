@@ -592,9 +592,9 @@ begin
       ('Can''t load datas with this program. Please update it.');
 
   if not AJSON.TryGetValue<integer>('id', FId) then
-    if hasID then
-      raise exception.Create('ID not found')
-    else
+//    if hasID then
+//      raise exception.Create('ID not found')
+//    else
       FId := CDelphiBooksNullID;
 
   if not AJSON.TryGetValue<string>('guid', Fguid) then
