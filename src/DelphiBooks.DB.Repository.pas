@@ -11,7 +11,7 @@ type
 
   TDelphiBooksDatabase = class
   private const
-    CDatabaseVersion = '20230630';
+    CDatabaseVersion = '20230705';
     CDBFileExtension = '.json';
 
   var
