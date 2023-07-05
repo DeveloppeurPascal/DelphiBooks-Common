@@ -592,10 +592,10 @@ begin
       ('Can''t load datas with this program. Please update it.');
 
   if not AJSON.TryGetValue<integer>('id', FId) then
-//    if hasID then
-//      raise exception.Create('ID not found')
-//    else
-      FId := CDelphiBooksNullID;
+    // if hasID then
+    // raise exception.Create('ID not found')
+    // else
+    FId := CDelphiBooksNullID;
 
   if not AJSON.TryGetValue<string>('guid', Fguid) then
     Fguid := '';
@@ -673,10 +673,11 @@ begin
   begin
     if (not ForDelphiBooksRepository) and (FId = CDelphiBooksNullID) then
       raise exception.Create('ID undefined !');
-    result.AddPair('id', Id);
+    if Id <> CDelphiBooksNullID then
+      result.AddPair('id', Id);
   end;
 
-  if hasURL then
+  if hasURL and ('' <> URL) then
     result.AddPair('url', URL);
 
   if ForDelphiBooksRepository then
@@ -685,8 +686,10 @@ begin
     result.AddPair('pagename', PageName);
     result.AddPair('datalevel', DataLevel);
     result.AddPair('dataversion', GetClassDataVersion);
-    result.AddPair('ispagetobuild', isPageToBuild);
-    result.AddPair('hasnewimage', FHasNewImage);
+    if isPageToBuild then
+      result.AddPair('ispagetobuild', isPageToBuild);
+    if FHasNewImage then
+      result.AddPair('hasnewimage', FHasNewImage);
   end;
 end;
 
@@ -928,7 +931,8 @@ function TDelphiBooksAuthorShort.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  result.AddPair('name', Name);
+  if name <> '' then
+    result.AddPair('name', Name);
 end;
 
 function TDelphiBooksAuthorShort.ToString: string;
@@ -972,7 +976,8 @@ function TDelphiBooksPublisherShort.ToJSONObject(ForDelphiBooksRepository
   : boolean): TJSONObject;
 begin
   result := inherited;
-  result.AddPair('label', CompanyName);
+  if CompanyName <> '' then
+    result.AddPair('label', CompanyName);
 end;
 
 function TDelphiBooksPublisherShort.ToString: string;
@@ -1062,10 +1067,15 @@ function TDelphiBooksBookShort.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  result.AddPair('name', Title);
-  result.AddPair('lang', LanguageISOCode);
-  result.AddPair('pubdate', PublishedDateYYYYMMDD);
-  result.AddPair('thumb', CoverThumbURL);
+  if name <> '' then
+    result.AddPair('name', Title);
+  if LanguageISOCode <> '' then
+    result.AddPair('lang', LanguageISOCode);
+  if (PublishedDateYYYYMMDD <> '') and (PublishedDateYYYYMMDD <> '00000000')
+  then
+    result.AddPair('pubdate', PublishedDateYYYYMMDD);
+  if CoverThumbURL <> '' then
+    result.AddPair('thumb', CoverThumbURL);
 end;
 
 function TDelphiBooksBookShort.ToString: string;
@@ -1132,8 +1142,10 @@ function TDelphiBooksTextItem.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  result.AddPair('lang', LanguageISOCode);
-  result.AddPair('text', Text);
+  if LanguageISOCode <> '' then
+    result.AddPair('lang', LanguageISOCode);
+  if Text <> '' then
+    result.AddPair('text', Text);
 end;
 
 function TDelphiBooksTextItem.ToString: string;
@@ -1274,15 +1286,19 @@ begin
   result := inherited;
   if ForDelphiBooksRepository then
   begin
-    result.AddPair('lastname', LastName);
-    result.AddPair('firstname', FirstName);
-    result.AddPair('pseudo', Pseudo);
+    if LastName <> '' then
+      result.AddPair('lastname', LastName);
+    if FirstName <> '' then
+      result.AddPair('firstname', FirstName);
+    if Pseudo <> '' then
+      result.AddPair('pseudo', Pseudo);
   end
   else if (not Pseudo.isempty) then
     result.AddPair('name', Pseudo)
   else
     result.AddPair('name', PublicName);
-  result.AddPair('website', WebSiteURL);
+  if WebSiteURL <> '' then
+    result.AddPair('website', WebSiteURL);
   result.AddPair('descriptions',
     Descriptions.ToJSONArray(ForDelphiBooksRepository));
   result.AddPair('books', Books.ToJSONArray(ForDelphiBooksRepository));
@@ -1374,7 +1390,8 @@ function TDelphiBooksPublisher.ToJSONObject(ForDelphiBooksRepository: boolean)
   : TJSONObject;
 begin
   result := inherited;
-  result.AddPair('website', WebSiteURL);
+  if WebSiteURL <> '' then
+    result.AddPair('website', WebSiteURL);
   result.AddPair('descriptions',
     Descriptions.ToJSONArray(ForDelphiBooksRepository));
   result.AddPair('books', Books.ToJSONArray(ForDelphiBooksRepository));
@@ -1766,32 +1783,53 @@ function TDelphiBooksBook.ToJSONObject(ForDelphiBooksRepository: boolean)
 begin
   result := inherited;
 
-  result.AddPair('isbn10', FISBN10);
-  result.AddPair('isbn13', FISBN13);
-  result.AddPair('website', WebSiteURL);
+  if FISBN10 <> '' then
+    result.AddPair('isbn10', FISBN10);
+  if FISBN13 <> '' then
+    result.AddPair('isbn13', FISBN13);
+  if WebSiteURL <> '' then
+    result.AddPair('website', WebSiteURL);
 
-  result.AddPair('cover', FCoverURL);
+  if FCoverURL <> '' then
+    result.AddPair('cover', FCoverURL);
 
-  result.AddPair('cover_100w', FCover100pxWidthURL);
-  result.AddPair('cover_150w', FCover150pxWidthURL);
-  result.AddPair('cover_200w', FCover200pxWidthURL);
-  result.AddPair('cover_300w', FCover300pxWidthURL);
-  result.AddPair('cover_400w', FCover400pxWidthURL);
-  result.AddPair('cover_500w', FCover500pxWidthURL);
+  if FCover100pxWidthURL <> '' then
+    result.AddPair('cover_100w', FCover100pxWidthURL);
+  if FCover150pxWidthURL <> '' then
+    result.AddPair('cover_150w', FCover150pxWidthURL);
+  if FCover200pxWidthURL <> '' then
+    result.AddPair('cover_200w', FCover200pxWidthURL);
+  if FCover300pxWidthURL <> '' then
+    result.AddPair('cover_300w', FCover300pxWidthURL);
+  if FCover400pxWidthURL <> '' then
+    result.AddPair('cover_400w', FCover400pxWidthURL);
+  if FCover500pxWidthURL <> '' then
+    result.AddPair('cover_500w', FCover500pxWidthURL);
 
-  result.AddPair('cover_100h', FCover100pxHeightURL);
-  result.AddPair('cover_200h', FCover200pxHeightURL);
-  result.AddPair('cover_300h', FCover300pxHeightURL);
-  result.AddPair('cover_400h', FCover400pxHeightURL);
-  result.AddPair('cover_500h', FCover500pxHeightURL);
+  if FCover100pxHeightURL <> '' then
+    result.AddPair('cover_100h', FCover100pxHeightURL);
+  if FCover200pxHeightURL <> '' then
+    result.AddPair('cover_200h', FCover200pxHeightURL);
+  if FCover300pxHeightURL <> '' then
+    result.AddPair('cover_300h', FCover300pxHeightURL);
+  if FCover400pxHeightURL <> '' then
+    result.AddPair('cover_400h', FCover400pxHeightURL);
+  if FCover500pxHeightURL <> '' then
+    result.AddPair('cover_500h', FCover500pxHeightURL);
 
-  result.AddPair('cover_100x100', FCover100pxSquareURL);
-  result.AddPair('cover_200x200', FCover200pxSquareURL);
-  result.AddPair('cover_300x300', FCover300pxSquareURL);
-  result.AddPair('cover_400x400', FCover400pxSquareURL);
-  result.AddPair('cover_500x500', FCover500pxSquareURL);
+  if FCover100pxSquareURL <> '' then
+    result.AddPair('cover_100x100', FCover100pxSquareURL);
+  if FCover200pxSquareURL <> '' then
+    result.AddPair('cover_200x200', FCover200pxSquareURL);
+  if FCover300pxSquareURL <> '' then
+    result.AddPair('cover_300x300', FCover300pxSquareURL);
+  if FCover400pxSquareURL <> '' then
+    result.AddPair('cover_400x400', FCover400pxSquareURL);
+  if FCover500pxSquareURL <> '' then
+    result.AddPair('cover_500x500', FCover500pxSquareURL);
 
-  result.AddPair('cover_130x110', FCover130x110pxURL);
+  if FCover130x110pxURL <> '' then
+    result.AddPair('cover_130x110', FCover130x110pxURL);
 
   result.AddPair('authors', Authors.ToJSONArray(ForDelphiBooksRepository));
   result.AddPair('publishers',
