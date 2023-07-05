@@ -26,6 +26,7 @@ type
   protected
     FId: integer;
     FHasChanged: boolean;
+    FHasNewImage: boolean;
     procedure ValuesChanged;
     function GetClassDataVersion: integer; virtual; abstract;
     function hasID: boolean; virtual;
@@ -573,6 +574,7 @@ begin
   FDataVersion := GetClassDataVersion;
   FHasChanged := false;
   FIsPageToBuild := false;
+  FHasNewImage := false;
 end;
 
 constructor TDelphiBooksItem.CreateFromJSON(AJSON: TJSONObject;
@@ -609,6 +611,9 @@ begin
 
   if not AJSON.TryGetValue<boolean>('ispagetobuild', FIsPageToBuild) then
     FIsPageToBuild := false;
+
+  if not AJSON.TryGetValue<boolean>('hasnewimage', FHasNewImage) then
+    FHasNewImage := false;
 
   FHasChanged := false;
 end;
@@ -681,6 +686,7 @@ begin
     result.AddPair('datalevel', DataLevel);
     result.AddPair('dataversion', GetClassDataVersion);
     result.AddPair('ispagetobuild', isPageToBuild);
+    result.AddPair('hasnewimage', FHasNewImage);
   end;
 end;
 
