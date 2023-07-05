@@ -67,6 +67,7 @@ type
   public
     procedure SetId(AID: integer);
     procedure SetHasChanged(AHasChanged: boolean);
+    procedure SetHasNewImage(AHasNewImage: boolean);
     function GetImageFileName: string;
   end;
 
@@ -504,6 +505,15 @@ end;
 procedure TDelphiBooksItemHelper.SetHasChanged(AHasChanged: boolean);
 begin
   FHasChanged := AHasChanged;
+end;
+
+procedure TDelphiBooksItemHelper.SetHasNewImage(AHasNewImage: boolean);
+begin
+  if (fhasnewimage <> AHasNewImage) then
+  begin
+    fhasnewimage := AHasNewImage;
+    FHasChanged := true;
+  end;
 end;
 
 procedure TDelphiBooksItemHelper.SetId(AID: integer);
