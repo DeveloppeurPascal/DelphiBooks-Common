@@ -54,8 +54,11 @@ type
 
   TDelphiBooksList<T: TDelphiBooksItem, constructor> = class(TList<T>)
   private
+    FParent: TDelphiBooksItem;
+    procedure SetParent(const Value: TDelphiBooksItem);
   protected
   public
+    property Parent: TDelphiBooksItem read FParent write SetParent;
     function ToJSONArray(ForDelphiBooksRepository: boolean = false)
       : TJSONArray; virtual;
     constructor CreateFromJSON(AJSON: TJSONArray;
@@ -65,13 +68,17 @@ type
     function GetMaxID: integer;
     procedure SortById;
     procedure SortByIdDesc;
+    constructor Create; override;
   end;
 
   TDelphiBooksObjectList<T: TDelphiBooksItem, constructor> = class
     (TObjectList<T>)
   private
+    FParent: TDelphiBooksItem;
+    procedure SetParent(const Value: TDelphiBooksItem);
   protected
   public
+    property Parent: TDelphiBooksItem read FParent write SetParent;
     function ToJSONArray(ForDelphiBooksRepository: boolean = false)
       : TJSONArray; virtual;
     constructor CreateFromJSON(AJSON: TJSONArray;
@@ -81,6 +88,7 @@ type
     function GetMaxID: integer;
     procedure SortById;
     procedure SortByIdDesc;
+    constructor Create; override;
   end;
 
   TDelphiBooksTextItem = class(TDelphiBooksItem)
@@ -707,6 +715,12 @@ end;
 
 { TDelphiBooksList<T> }
 
+constructor TDelphiBooksList<T>.Create;
+begin
+  inherited;
+  FParent := nil;
+end;
+
 constructor TDelphiBooksList<T>.CreateFromJSON(AJSON: TJSONArray;
   AFromRepository: boolean);
 var
@@ -761,6 +775,11 @@ begin
       result := items[i].Id;
 end;
 
+procedure TDelphiBooksList<T>.SetParent(const Value: TDelphiBooksItem);
+begin
+  FParent := Value;
+end;
+
 procedure TDelphiBooksList<T>.SortById;
 begin
   Sort(TComparer<T>.Construct(
@@ -801,6 +820,12 @@ begin
 end;
 
 { TDelphiBooksObjectList<T> }
+
+constructor TDelphiBooksObjectList<T>.Create;
+begin
+  inherited;
+  FParent := nil;
+end;
 
 constructor TDelphiBooksObjectList<T>.CreateFromJSON(AJSON: TJSONArray;
 AFromRepository: boolean);
@@ -854,6 +879,11 @@ begin
   for i := 0 to Count - 1 do
     if items[i].Id > result then
       result := items[i].Id;
+end;
+
+procedure TDelphiBooksObjectList<T>.SetParent(const Value: TDelphiBooksItem);
+begin
+  FParent := Value;
 end;
 
 procedure TDelphiBooksObjectList<T>.SortById;
