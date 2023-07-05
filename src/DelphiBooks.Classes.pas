@@ -18,7 +18,6 @@ type
     FPageName: string;
     FDataLevel: integer;
     FDataVersion: integer;
-    FIsPageToBuild: boolean;
     FURL: string;
     function Getguid: string;
     procedure SetPageName(const Value: string);
@@ -38,7 +37,7 @@ type
     property Guid: string read Getguid;
     property DataLevel: integer read FDataLevel;
     property hasChanged: boolean read FHasChanged;
-    property isPageToBuild: boolean read FIsPageToBuild;
+    property hasNewImage: boolean read FHasNewImage;
     property PageName: string read FPageName write SetPageName;
 
     constructor Create; virtual;
@@ -581,7 +580,6 @@ begin
   FDataLevel := 0;
   FDataVersion := GetClassDataVersion;
   FHasChanged := false;
-  FIsPageToBuild := false;
   FHasNewImage := false;
 end;
 
@@ -616,9 +614,6 @@ begin
 
   if not AJSON.TryGetValue<integer>('datalevel', FDataLevel) then
     FDataLevel := 0;
-
-  if not AJSON.TryGetValue<boolean>('ispagetobuild', FIsPageToBuild) then
-    FIsPageToBuild := false;
 
   if not AJSON.TryGetValue<boolean>('hasnewimage', FHasNewImage) then
     FHasNewImage := false;
@@ -694,8 +689,6 @@ begin
     result.AddPair('pagename', PageName);
     result.AddPair('datalevel', DataLevel);
     result.AddPair('dataversion', GetClassDataVersion);
-    if isPageToBuild then
-      result.AddPair('ispagetobuild', isPageToBuild);
     if FHasNewImage then
       result.AddPair('hasnewimage', FHasNewImage);
   end;
@@ -710,7 +703,6 @@ procedure TDelphiBooksItem.ValuesChanged;
 begin
   inc(FDataLevel);
   FHasChanged := true;
-  FIsPageToBuild := true;
 end;
 
 { TDelphiBooksList<T> }
