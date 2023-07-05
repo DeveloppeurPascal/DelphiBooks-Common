@@ -27,6 +27,10 @@ type
   protected
     procedure CreateRecordFromRepository(AFilename: string;
       ATable: TDelphiBooksTable);
+    function GuidToFilename(AGuid: string; ATable: TDelphiBooksTable;
+      AFileExtension: string): string;
+    procedure RebuildBooksListForAuthors;
+    procedure RebuildBooksListForPublishers;
   public const
     CThumbExtension = '.jpg';
     property Authors: TDelphiBooksAuthorsObjectList read FAuthors
@@ -42,8 +46,6 @@ type
     procedure CheckRepositoryLevelInFolder(AFolder: string);
     function isPageNameUniq(APageName: string; ATable: TDelphiBooksTable;
       ACurItem: TDelphiBooksItem): boolean;
-    function GuidToFilename(AGuid: string; ATable: TDelphiBooksTable;
-      AFileExtension: string): string;
     constructor CreateFromRepository(ARepositoryFolder: string); virtual;
     procedure SaveToRepository(AFolder: string = '';
       AOnlyChanged: boolean = true); virtual;
@@ -135,6 +137,9 @@ begin
   LoadPublishersFromRepository(DatabaseFolder);
   LoadBooksFromRepository(DatabaseFolder);
   LoadLanguagesFromRepository(DatabaseFolder);
+
+  RebuildBooksListForAuthors;
+  RebuildBooksListForPublishers;
 
   // All is good, we save the database repository folder
   FDatabaseFolder := DatabaseFolder;
@@ -326,6 +331,86 @@ begin
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Publishers);
 end;
 
+procedure TDelphiBooksDatabase.RebuildBooksListForAuthors;
+var
+  a: tdelphibooksauthor;
+  b: TDelphiBooksBook;
+  ashort: tdelphibooksauthorshort;
+  bshort: TDelphiBooksBookShort;
+begin
+  if assigned(Authors) and (Authors.Count > 0) then
+  begin
+    // remove books from all authors
+    Authors.SortByName;
+    for a in Authors do
+    begin
+      a.Books.clear;
+      a.SetHasChanged(true);
+    end;
+
+    // regenerate all links
+    if assigned(Books) and (Books.Count > 0) then
+    begin
+      Books.SortByTitle;
+      for b in Books do
+        if assigned(b.Authors) and (b.Authors.Count > 0) then
+        begin
+          b.Authors.SortByName;
+          for ashort in b.Authors do
+          begin
+            a := Authors.GetItemByGUID(ashort.Guid);
+            if not assigned(a) then
+              raise exception.Create('A book''s author is missing ! ("' +
+                ashort.ToString + '")');
+            bshort := TDelphiBooksBookShort.createfromjson
+              (b.ToJSONObject(true), true);
+            a.Books.add(bshort);
+          end;
+        end;
+    end;
+  end;
+end;
+
+procedure TDelphiBooksDatabase.RebuildBooksListForPublishers;
+var
+  p: TDelphiBooksPublisher;
+  b: TDelphiBooksBook;
+  pshort: TDelphiBooksPublishershort;
+  bshort: TDelphiBooksBookShort;
+begin
+  if assigned(Publishers) and (Publishers.Count > 0) then
+  begin
+    // remove books from all publishers
+    Publishers.SortByCompanyName;
+    for p in Publishers do
+    begin
+      p.Books.clear;
+      p.SetHasChanged(true);
+    end;
+
+    // regenerate all links
+    if assigned(Books) and (Books.Count > 0) then
+    begin
+      Books.SortByTitle;
+      for b in Books do
+        if assigned(b.Publishers) and (b.Publishers.Count > 0) then
+        begin
+          b.Publishers.SortByCompanyName;
+          for pshort in b.Publishers do
+          begin
+            p := Publishers.GetItemByGUID(pshort.Guid);
+            if not assigned(p) then
+              raise exception.Create('A book''s publisher is missing ! ("' +
+                pshort.ToString + '")');
+            bshort := TDelphiBooksBookShort.createfromjson
+              (b.ToJSONObject(true), true);
+            p.Books.add(bshort);
+          end;
+        end;
+    end;
+  end;
+end;
+
 procedure TDelphiBooksDatabase.SaveAuthorsToRepository(ADatabaseFolder: string;
   AOnlyChanged: boolean);
 var
@@ -469,8 +554,8 @@ function TDelphiBooksItemHelper.GetImageFileName: string;
 var
   i: integer;
 begin
-  if (self is TDelphiBooksLanguage) then
-    result := (self as TDelphiBooksLanguage).languageisocode + '.gif'
+  if (Self is TDelphiBooksLanguage) then
+    result := (Self as TDelphiBooksLanguage).languageisocode + '.gif'
   else
   begin
     result := '';
@@ -483,15 +568,15 @@ begin
     if result.isempty then
       raise exception.Create('Wrong GUID. Filename conversion not available.');
 
-    if (self is tdelphibooksauthor) or (self is tdelphibooksauthorshort) then
+    if (Self is tdelphibooksauthor) or (Self is tdelphibooksauthorshort) then
       result := 'a-' + result + '.png'
-    else if (self is TDelphiBooksPublisher) or
-      (self is tdelphibookspublishershort) then
+    else if (Self is TDelphiBooksPublisher) or
+      (Self is TDelphiBooksPublishershort) then
       result := 'p-' + result + '.png'
-    else if (self is TDelphiBooksBook) or (self is tdelphibooksbookshort) then
+    else if (Self is TDelphiBooksBook) or (Self is TDelphiBooksBookShort) then
       result := 'b-' + result + '.png'
     else
-      raise exception.Create('Unknow image file name for ' + self.classname);
+      raise exception.Create('Unknow image file name for ' + Self.classname);
   end;
 end;
 
