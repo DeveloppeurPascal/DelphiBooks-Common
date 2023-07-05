@@ -1193,7 +1193,9 @@ begin
   FPseudo := '';
   FWebSiteURL := '';
   FDescriptions := TDelphiBooksDescriptionsObjectList.Create;
+  FDescriptions.Parent := self;
   FBooks := TDelphiBooksBookShortsObjectList.Create;
+  FBooks.Parent := self;
 end;
 
 constructor TDelphiBooksAuthor.CreateFromJSON(AJSON: TJSONObject;
@@ -1222,6 +1224,7 @@ begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    fdescription.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('books', jsa) then
@@ -1229,6 +1232,7 @@ begin
     FBooks.Free;
     Books := TDelphiBooksBookShortsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FBooks.Parent := self;
   end;
 
   FHasChanged := false;
@@ -1346,7 +1350,9 @@ begin
   inherited;
   FWebSiteURL := '';
   FDescriptions := TDelphiBooksDescriptionsObjectList.Create;
+  FDescriptions.Parent := self;
   FBooks := TDelphiBooksBookShortsObjectList.Create;
+  FBooks.Parent := self;
 end;
 
 constructor TDelphiBooksPublisher.CreateFromJSON(AJSON: TJSONObject;
@@ -1363,6 +1369,7 @@ begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FDescriptions.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('books', jsa) then
@@ -1370,6 +1377,7 @@ begin
     FBooks.Free;
     Books := TDelphiBooksBookShortsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FBooks.Parent := self;
   end;
 
   FHasChanged := false;
@@ -1456,10 +1464,15 @@ begin
   FCover130x110pxURL := '';
 
   FTOCs := TDelphiBooksTableOfContentsObjectList.Create;
+  FTOCs.Parent := self;
   FDescriptions := TDelphiBooksDescriptionsObjectList.Create;
+  FDescriptions.Parent := self;
   FAuthors := TDelphiBooksAuthorShortsObjectList.Create;
+  FAuthors.Parent := self;
   FPublishers := TDelphiBooksPublisherShortsObjectList.Create;
+  FPublishers.Parent := self;
   FKeywords := TDelphiBooksKeywordsObjectList.Create;
+  FKeywords.Parent := self;
 end;
 
 constructor TDelphiBooksBook.CreateFromJSON(AJSON: TJSONObject;
@@ -1521,6 +1534,7 @@ begin
     FAuthors.Free;
     Authors := TDelphiBooksAuthorShortsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FAuthors.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('publishers', jsa) then
@@ -1528,6 +1542,7 @@ begin
     FPublishers.Free;
     Publishers := TDelphiBooksPublisherShortsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FPublishers.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('descriptions', jsa) then
@@ -1535,6 +1550,7 @@ begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FDescriptions.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('tocs', jsa) then
@@ -1542,6 +1558,7 @@ begin
     FTOCs.Free;
     TOCs := TDelphiBooksTableOfContentsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FTOCs.Parent := self;
   end;
 
   if AJSON.TryGetValue<TJSONArray>('keywords', jsa) then
@@ -1549,6 +1566,7 @@ begin
     FKeywords.Free;
     Keywords := TDelphiBooksKeywordsObjectList.CreateFromJSON(jsa,
       AFromRepository);
+    FKeywords.Parent := self;
   end;
 
   FHasChanged := false;
