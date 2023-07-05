@@ -67,6 +67,7 @@ type
   public
     procedure SetId(AID: integer);
     procedure SetHasChanged(AHasChanged: boolean);
+    function GetImageFileName: string;
   end;
 
 function AddNewLineToJSONAsString(JSON: string): string;
@@ -471,6 +472,34 @@ begin
 end;
 
 { TDelphiBooksItemHelper }
+
+function TDelphiBooksItemHelper.GetImageFileName: string;
+begin
+  if (self is tdelphibookslanguage) then
+    result := (self as tdelphibookslanguage).languageisocode + '.gif'
+  else
+  begin
+    result := '';
+    for i := 0 to length(Guid) - 1 do
+    begin
+      if CharInSet(Guid.Chars[i], ['0' .. '9', 'A' .. 'Z', 'a' .. 'z']) then
+        result := result + Guid.Chars[i];
+    end;
+
+    if result.isempty then
+      raise exception.Create('Wrong GUID. Filename conversion not available.');
+
+    if (self is tdelphibooksauthor) or (self is tdelphibooksauthorshort) then
+      result := 'a-' + result + '.png'
+    else if (self is tdelphibookspublisher) or
+      (self is tdelphibookspublishershort) then
+      result := 'p-' + result + '.png'
+    else if (self is tdelphibooksbook) or (self is tdelphibooksbookshort) then
+      result := 'b-' + result + '.png'
+    else
+      raise exception.Create('Unknow image file name for '.self.classname);
+  end;
+end;
 
 procedure TDelphiBooksItemHelper.SetHasChanged(AHasChanged: boolean);
 begin
