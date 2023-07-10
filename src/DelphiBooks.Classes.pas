@@ -67,6 +67,7 @@ type
     function GetMaxID: integer;
     procedure SortById;
     procedure SortByIdDesc;
+    procedure SortByPageName;
     constructor Create;
   end;
 
@@ -87,6 +88,7 @@ type
     function GetMaxID: integer;
     procedure SortById;
     procedure SortByIdDesc;
+    procedure SortByPageName;
     constructor Create;
   end;
 
@@ -206,6 +208,67 @@ type
   public
     procedure SortByText;
     procedure SortByISOCode;
+  end;
+
+  TDelphiBooksWebPageContent = class(TDelphiBooksTextItem)
+  private const
+    CDataVersion = 1;
+
+  var
+    FTitle: string;
+    procedure SetTitle(const Value: string);
+  protected
+    function hasID: boolean; override;
+    function hasURL: boolean; override;
+    function GetClassDataVersion: integer; override;
+  public
+    property Title: string read FTitle write SetTitle;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+    constructor Create; override;
+  end;
+
+  TDelphiBooksWebPageContentsList = class
+    (TDelphiBooksTextItemsList<TDelphiBooksWebPageContent>)
+  public
+    procedure SortByISOCode;
+  end;
+
+  TDelphiBooksWebPageContentsObjectList = class
+    (TDelphiBooksTextItemsObjectList<TDelphiBooksWebPageContent>)
+  public
+    procedure SortByISOCode;
+  end;
+
+  TDelphiBooksWebPage = class(TDelphiBooksItem)
+  private const
+    CDataVersion = 1;
+
+  var
+    FContents: TDelphiBooksWebPageContentsObjectList;
+    procedure SetContents(const Value: TDelphiBooksWebPageContentsObjectList);
+  protected
+    function hasID: boolean; override;
+    function hasURL: boolean; override;
+    function GetClassDataVersion: integer; override;
+  public
+    property Contents: TDelphiBooksWebPageContentsObjectList read FContents
+      write SetContents;
+    constructor Create; override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
+    destructor Destroy; override;
+    function ToJSONObject(ForDelphiBooksRepository: boolean = false)
+      : TJSONObject; override;
+  end;
+
+  TDelphiBooksWebPagesList = class(TDelphiBooksList<TDelphiBooksWebPage>)
+  end;
+
+  TDelphiBooksWebPagesObjectList = class
+    (TDelphiBooksObjectList<TDelphiBooksWebPage>)
   end;
 
   TDelphiBooksAuthorShort = class(TDelphiBooksItem)
@@ -810,6 +873,20 @@ begin
     end));
 end;
 
+procedure TDelphiBooksList<T>.SortByPageName;
+begin
+  Sort(TComparer<T>.Construct(
+    function(const a, b: T): integer
+    begin
+      if a.PageName = b.PageName then
+        result := 0
+      else if a.PageName > b.PageName then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
 function TDelphiBooksList<T>.ToJSONArray(ForDelphiBooksRepository: boolean)
   : TJSONArray;
 var
@@ -913,6 +990,20 @@ begin
       if a.Id = b.Id then
         result := 0
       else if a.Id < b.Id then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+procedure TDelphiBooksObjectList<T>.SortByPageName;
+begin
+  Sort(TComparer<T>.Construct(
+    function(const a, b: T): integer
+    begin
+      if a.PageName = b.PageName then
+        result := 0
+      else if a.PageName > b.PageName then
         result := 1
       else
         result := -1;
@@ -2553,6 +2644,161 @@ procedure TDelphiBooksTableOfContentsObjectList.SortByISOCode;
 begin
   Sort(TComparer<TDelphiBooksTableOfContent>.Construct(
     function(const a, b: TDelphiBooksTableOfContent): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksWebPageContent }
+
+constructor TDelphiBooksWebPageContent.Create;
+begin
+  inherited;
+  FTitle := '';
+end;
+
+constructor TDelphiBooksWebPageContent.CreateFromJSON(AJSON: TJSONObject;
+AFromRepository, ADestroyJSONObject: boolean);
+begin
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
+  if not AJSON.TryGetValue<string>('title', FTitle) then
+    FTitle := '';
+
+  FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
+end;
+
+function TDelphiBooksWebPageContent.GetClassDataVersion: integer;
+begin
+  result := CDataVersion;
+end;
+
+function TDelphiBooksWebPageContent.hasID: boolean;
+begin
+  result := false;
+end;
+
+function TDelphiBooksWebPageContent.hasURL: boolean;
+begin
+  result := false;
+end;
+
+procedure TDelphiBooksWebPageContent.SetTitle(const Value: string);
+begin
+  if FTitle = Value then
+    exit;
+
+  FTitle := Value;
+  ValuesChanged;
+end;
+
+function TDelphiBooksWebPageContent.ToJSONObject(ForDelphiBooksRepository
+  : boolean): TJSONObject;
+begin
+  result := inherited;
+
+  if (FTitle <> '') then
+    result.AddPair('title', FTitle);
+end;
+
+{ TDelphiBooksWebPage }
+
+constructor TDelphiBooksWebPage.Create;
+begin
+  inherited;
+  FContents := TDelphiBooksWebPageContentsObjectList.Create;
+end;
+
+constructor TDelphiBooksWebPage.CreateFromJSON(AJSON: TJSONObject;
+AFromRepository, ADestroyJSONObject: boolean);
+var
+  jsa: TJSONArray;
+begin
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
+  if AJSON.TryGetValue<TJSONArray>('contents', jsa) then
+  begin
+    FContents.Free;
+    Contents := TDelphiBooksWebPageContentsObjectList.CreateFromJSON(jsa,
+      AFromRepository, false);
+    FContents.Parent := self;
+  end;
+
+  FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
+end;
+
+destructor TDelphiBooksWebPage.Destroy;
+begin
+  Contents.Free;
+  inherited;
+end;
+
+function TDelphiBooksWebPage.GetClassDataVersion: integer;
+begin
+  result := CDataVersion;
+end;
+
+function TDelphiBooksWebPage.hasID: boolean;
+begin
+  result := true;
+end;
+
+function TDelphiBooksWebPage.hasURL: boolean;
+begin
+  result := true;
+end;
+
+procedure TDelphiBooksWebPage.SetContents(const Value
+  : TDelphiBooksWebPageContentsObjectList);
+begin
+  if FContents = Value then
+    exit;
+
+  FContents := Value;
+  ValuesChanged;
+end;
+
+function TDelphiBooksWebPage.ToJSONObject(ForDelphiBooksRepository: boolean)
+  : TJSONObject;
+begin
+  result := inherited;
+
+  result.AddPair('contents', Contents.ToJSONArray(ForDelphiBooksRepository));
+end;
+
+{ TDelphiBooksWebPageContentsList }
+
+procedure TDelphiBooksWebPageContentsList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksWebPageContent>.Construct(
+    function(const a, b: TDelphiBooksWebPageContent): integer
+    begin
+      if a.LanguageISOCode = b.LanguageISOCode then
+        result := 0
+      else if a.LanguageISOCode > b.LanguageISOCode then
+        result := 1
+      else
+        result := -1;
+    end));
+end;
+
+{ TDelphiBooksWebPageContentsObjectList }
+
+procedure TDelphiBooksWebPageContentsObjectList.SortByISOCode;
+begin
+  Sort(TComparer<TDelphiBooksWebPageContent>.Construct(
+    function(const a, b: TDelphiBooksWebPageContent): integer
     begin
       if a.LanguageISOCode = b.LanguageISOCode then
         result := 0
