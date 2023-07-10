@@ -440,18 +440,25 @@ end;
 procedure TDelphiBooksDatabase.SaveItemToRepository(AItem: TDelphiBooksItem;
   AItemTable: TDelphiBooksTable; ADatabaseFolder: string;
   AOnlyChanged: boolean);
+var
+  JSO: TJSONObject;
 begin
   if ADatabaseFolder.isempty then
     ADatabaseFolder := FDatabaseFolder;
 
   if (AOnlyChanged and AItem.hasChanged) or (not AOnlyChanged) then
   begin
-    // TODO : don't save a file where previous version is the same as the new one
-    tfile.WriteAllText(tpath.Combine(ADatabaseFolder, GuidToFilename(AItem.Guid,
-      AItemTable, CDBFileExtension)),
-      AddNewLineToJSONAsString(AItem.ToJSONObject(true).ToJSON),
-      tencoding.utf8);
-    AItem.SetHasChanged(false);
+    begin
+      // TODO : don't save a file where previous version is the same as the new one
+      JSO := AItem.ToJSONObject(true);try
+      tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
+        GuidToFilename(AItem.Guid, AItemTable, CDBFileExtension)),
+        AddNewLineToJSONAsString(JSO.ToJSON), tencoding.utf8);
+      finally
+        jso.Free;
+      end;
+      AItem.SetHasChanged(false);
+    end;
   end;
 end;
 
