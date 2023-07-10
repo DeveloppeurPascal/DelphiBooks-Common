@@ -7,7 +7,7 @@ uses
 
 type
 {$SCOPEDENUMS ON}
-  TDelphiBooksTable = (Authors, Publishers, Books, Languages);
+  TDelphiBooksTable = (Authors, Publishers, Books, Languages, WebPages);
 
   TDelphiBooksDatabase = class
   private const
@@ -20,6 +20,8 @@ type
     FAuthors: TDelphiBooksAuthorsObjectList;
     FPublishers: TDelphiBooksPublishersObjectList;
     FLanguages: TDelphiBooksLanguagesObjectList;
+    FWebPages: TDelphiBooksWebPagesObjectList;
+    procedure SetWebPages(const Value: TDelphiBooksWebPagesObjectList);
     procedure SetLanguages(const Value: TDelphiBooksLanguagesObjectList);
     procedure SetAuthors(const Value: TDelphiBooksAuthorsObjectList);
     procedure SetBooks(const Value: TDelphiBooksBooksObjectList);
@@ -40,6 +42,8 @@ type
     property Books: TDelphiBooksBooksObjectList read FBooks write SetBooks;
     property Languages: TDelphiBooksLanguagesObjectList read FLanguages
       write SetLanguages;
+    property WebPages: TDelphiBooksWebPagesObjectList read FWebPages
+      write SetWebPages;
     property DatabaseFolder: string read FDatabaseFolder;
     constructor Create; virtual;
     destructor Destroy; override;
@@ -65,6 +69,9 @@ type
     procedure LoadLanguagesFromRepository(ADatabaseFolder
       : string = ''); virtual;
     procedure SaveLanguagesToRepository(ADatabaseFolder: string = '';
+      AOnlyChanged: boolean = true); virtual;
+    procedure LoadWebPagesFromRepository(ADatabaseFolder: string = ''); virtual;
+    procedure SaveWebPagesToRepository(ADatabaseFolder: string = '';
       AOnlyChanged: boolean = true); virtual;
   end;
 
@@ -96,6 +103,7 @@ begin
   FAuthors := TDelphiBooksAuthorsObjectList.Create;
   FPublishers := TDelphiBooksPublishersObjectList.Create;
   FLanguages := TDelphiBooksLanguagesObjectList.Create;
+  FWebPages := TDelphiBooksWebPagesObjectList.Create;
 
   FDatabaseFolder := '';
 {$IFDEF DEBUG}
@@ -137,6 +145,7 @@ begin
   LoadPublishersFromRepository(DatabaseFolder);
   LoadBooksFromRepository(DatabaseFolder);
   LoadLanguagesFromRepository(DatabaseFolder);
+  LoadWebPagesFromRepository(DatabaseFolder);
 
   RebuildBooksListForAuthors;
   RebuildBooksListForPublishers;
@@ -172,6 +181,8 @@ begin
         Books.add(TDelphiBooksBook.createfromjson(JSO, true, false));
       TDelphiBooksTable.Languages:
         Languages.add(TDelphiBooksLanguage.createfromjson(JSO, true, false));
+      TDelphiBooksTable.WebPages:
+        WebPages.add(TDelphiBooksWebPage.createfromjson(JSO, true, false));
     end;
   finally
     JSO.Free;
@@ -184,6 +195,7 @@ begin
   FBooks.Free;
   FPublishers.Free;
   FAuthors.Free;
+  FWebPages.Free;
   inherited;
 end;
 
@@ -220,6 +232,10 @@ begin
       result := 'b-' + result;
     TDelphiBooksTable.Languages:
       result := 'l-' + result;
+    TDelphiBooksTable.WebPages:
+      result := 'wp-' + result;
+  else
+    raise exception.Create('Table type has no filename prefix implemented !');
   end;
 
   result := result + '.' + AFileExtension;
@@ -232,6 +248,7 @@ var
   b: TDelphiBooksBook;
   p: TDelphiBooksPublisher;
   a: tdelphibooksauthor;
+  wp: TDelphiBooksWebPage;
 begin
   result := true;
 
@@ -266,6 +283,15 @@ begin
     for p in Publishers do
       if (p.PageName = APageName) and
         ((ATable <> TDelphiBooksTable.Publishers) or (p <> ACurItem)) then
+      begin
+        result := false;
+        exit;
+      end;
+
+  if (WebPages.Count > 0) then
+    for wp in WebPages do
+      if (wp.PageName = APageName) and
+        ((ATable <> TDelphiBooksTable.WebPages) or (wp <> ACurItem)) then
       begin
         result := false;
         exit;
@@ -329,6 +355,21 @@ begin
   if (length(Files) > 0) then
     for i := 0 to length(Files) - 1 do
       CreateRecordFromRepository(Files[i], TDelphiBooksTable.Publishers);
+end;
+
+procedure TDelphiBooksDatabase.LoadWebPagesFromRepository
+  (ADatabaseFolder: string);
+var
+  Files: TStringDynArray;
+  i: integer;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  Files := tdirectory.getfiles(ADatabaseFolder, 'wp-*' + CDBFileExtension);
+  WebPages.clear;
+  if (length(Files) > 0) then
+    for i := 0 to length(Files) - 1 do
+      CreateRecordFromRepository(Files[i], TDelphiBooksTable.WebPages);
 end;
 
 procedure TDelphiBooksDatabase.RebuildBooksListForAuthors;
@@ -450,12 +491,13 @@ begin
   begin
     begin
       // TODO : don't save a file where previous version is the same as the new one
-      JSO := AItem.ToJSONObject(true);try
-      tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
-        GuidToFilename(AItem.Guid, AItemTable, CDBFileExtension)),
-        AddNewLineToJSONAsString(JSO.ToJSON), tencoding.utf8);
+      JSO := AItem.ToJSONObject(true);
+      try
+        tfile.WriteAllText(tpath.Combine(ADatabaseFolder,
+          GuidToFilename(AItem.Guid, AItemTable, CDBFileExtension)),
+          AddNewLineToJSONAsString(JSO.ToJSON), tencoding.utf8);
       finally
-        jso.Free;
+        JSO.Free;
       end;
       AItem.SetHasChanged(false);
     end;
@@ -513,6 +555,20 @@ begin
   SavePublishersToRepository(DatabaseFolder, AOnlyChanged);
   SaveBooksToRepository(DatabaseFolder, AOnlyChanged);
   SaveLanguagesToRepository(DatabaseFolder, AOnlyChanged);
+  SaveWebPagesToRepository(DatabaseFolder, AOnlyChanged);
+end;
+
+procedure TDelphiBooksDatabase.SaveWebPagesToRepository(ADatabaseFolder: string;
+  AOnlyChanged: boolean);
+var
+  WebPage: TDelphiBooksWebPage;
+begin
+  if ADatabaseFolder.isempty then
+    ADatabaseFolder := FDatabaseFolder;
+  if WebPages.Count > 0 then
+    for WebPage in WebPages do
+      SaveItemToRepository(WebPage, TDelphiBooksTable.WebPages, ADatabaseFolder,
+        AOnlyChanged);
 end;
 
 procedure TDelphiBooksDatabase.CheckRepositoryLevelInFolder(AFolder: string);
@@ -553,6 +609,12 @@ procedure TDelphiBooksDatabase.SetPublishers(const Value
   : TDelphiBooksPublishersObjectList);
 begin
   FPublishers := Value;
+end;
+
+procedure TDelphiBooksDatabase.SetWebPages(const Value
+  : TDelphiBooksWebPagesObjectList);
+begin
+  FWebPages := Value;
 end;
 
 { TDelphiBooksItemHelper }
