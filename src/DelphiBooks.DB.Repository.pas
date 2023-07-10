@@ -165,13 +165,13 @@ begin
   try
     case ATable of
       TDelphiBooksTable.Authors:
-        Authors.add(tdelphibooksauthor.createfromjson(JSO, true));
+        Authors.add(tdelphibooksauthor.createfromjson(JSO, true, false));
       TDelphiBooksTable.Publishers:
-        Publishers.add(TDelphiBooksPublisher.createfromjson(JSO, true));
+        Publishers.add(TDelphiBooksPublisher.createfromjson(JSO, true, false));
       TDelphiBooksTable.Books:
-        Books.add(TDelphiBooksBook.createfromjson(JSO, true));
+        Books.add(TDelphiBooksBook.createfromjson(JSO, true, false));
       TDelphiBooksTable.Languages:
-        Languages.add(TDelphiBooksLanguage.createfromjson(JSO, true));
+        Languages.add(TDelphiBooksLanguage.createfromjson(JSO, true, false));
     end;
   finally
     JSO.Free;
@@ -362,8 +362,8 @@ begin
             if not assigned(a) then
               raise exception.Create('A book''s author is missing ! ("' +
                 ashort.ToString + '")');
-            bshort := TDelphiBooksBookShort.createfromjson
-              (b.ToJSONObject(true), true);
+            bshort := TDelphiBooksBookShort.createfromjson(b.ToJSONObject(true),
+              true, true);
             a.Books.add(bshort);
           end;
         end;
@@ -402,8 +402,8 @@ begin
             if not assigned(p) then
               raise exception.Create('A book''s publisher is missing ! ("' +
                 pshort.ToString + '")');
-            bshort := TDelphiBooksBookShort.createfromjson
-              (b.ToJSONObject(true), true);
+            bshort := TDelphiBooksBookShort.createfromjson(b.ToJSONObject(true),
+              true, true);
             p.Books.add(bshort);
           end;
         end;

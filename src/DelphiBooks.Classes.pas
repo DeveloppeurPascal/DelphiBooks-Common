@@ -42,8 +42,8 @@ type
 
     constructor Create; virtual;
 
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); virtual;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); virtual;
 
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; virtual;
@@ -60,8 +60,8 @@ type
     property Parent: TDelphiBooksItem read FParent write SetParent;
     function ToJSONArray(ForDelphiBooksRepository: boolean = false)
       : TJSONArray; virtual;
-    constructor CreateFromJSON(AJSON: TJSONArray;
-      AFromRepository: boolean = false); virtual;
+    constructor CreateFromJSON(AJSON: TJSONArray; AFromRepository: boolean;
+      ADestroyJSONArray: boolean); virtual;
     function GetItemByID(AID: integer): T;
     function GetItemByGUID(AGuid: string): T;
     function GetMaxID: integer;
@@ -80,8 +80,8 @@ type
     property Parent: TDelphiBooksItem read FParent write SetParent;
     function ToJSONArray(ForDelphiBooksRepository: boolean = false)
       : TJSONArray; virtual;
-    constructor CreateFromJSON(AJSON: TJSONArray;
-      AFromRepository: boolean = false); virtual;
+    constructor CreateFromJSON(AJSON: TJSONArray; AFromRepository: boolean;
+      ADestroyJSONArray: boolean); virtual;
     function GetItemByID(AID: integer): T;
     function GetItemByGUID(AGuid: string): T;
     function GetMaxID: integer;
@@ -107,8 +107,8 @@ type
     property LanguageISOCode: string read FLanguageISOCode
       write SetLanguageISOCode;
     property Text: string read FText write SetText;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
@@ -222,8 +222,8 @@ type
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToString: string; override;
   end;
 
@@ -274,8 +274,8 @@ type
     property Descriptions: TDelphiBooksDescriptionsObjectList read FDescriptions
       write SetDescriptions;
     property Books: TDelphiBooksBookShortsObjectList read FBooks write SetBooks;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
@@ -312,8 +312,8 @@ type
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToString: string; override;
   end;
 
@@ -351,8 +351,8 @@ type
     property Descriptions: TDelphiBooksDescriptionsObjectList read FDescriptions
       write SetDescriptions;
     property Books: TDelphiBooksBookShortsObjectList read FBooks write SetBooks;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
@@ -399,8 +399,8 @@ type
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToString: string; override;
   end;
 
@@ -531,8 +531,8 @@ type
       write SetCover500pxSquareURL;
     property Cover130x110pxURL: string read FCover130x110pxURL
       write SetCover130x110pxURL;
-    constructor CreateFromJSON(AJSON: TJSONObject;
-      AFromRepository: boolean = false); override;
+    constructor CreateFromJSON(AJSON: TJSONObject; AFromRepository: boolean;
+      ADestroyJSONObject: boolean); override;
     function ToJSONObject(ForDelphiBooksRepository: boolean = false)
       : TJSONObject; override;
     constructor Create; override;
@@ -584,7 +584,7 @@ begin
 end;
 
 constructor TDelphiBooksItem.CreateFromJSON(AJSON: TJSONObject;
-  AFromRepository: boolean);
+  AFromRepository: boolean; ADestroyJSONObject: boolean);
 begin
   if (not assigned(AJSON)) or (not(AJSON is TJSONObject)) then
     raise exception.Create('JSON Object expected');
@@ -619,6 +619,9 @@ begin
     FHasNewImage := false;
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 function TDelphiBooksItem.Getguid: string;
@@ -714,7 +717,7 @@ begin
 end;
 
 constructor TDelphiBooksList<T>.CreateFromJSON(AJSON: TJSONArray;
-  AFromRepository: boolean);
+  AFromRepository: boolean; ADestroyJSONArray: boolean);
 var
   jsv: tjsonvalue;
 begin
@@ -726,7 +729,10 @@ begin
   if (AJSON.Count > 0) then
     for jsv in AJSON do
       if (jsv is TJSONObject) then
-        add(T.CreateFromJSON(jsv as TJSONObject, AFromRepository));
+        add(T.CreateFromJSON(jsv as TJSONObject, AFromRepository, false));
+
+  if ADestroyJSONArray then
+    AJSON.Free;
 end;
 
 function TDelphiBooksList<T>.GetItemByGUID(AGuid: string): T;
@@ -820,7 +826,7 @@ begin
 end;
 
 constructor TDelphiBooksObjectList<T>.CreateFromJSON(AJSON: TJSONArray;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONArray: boolean);
 var
   jsv: tjsonvalue;
 begin
@@ -832,7 +838,10 @@ begin
   if (AJSON.Count > 0) then
     for jsv in AJSON do
       if (jsv is TJSONObject) then
-        add(T.CreateFromJSON(jsv as TJSONObject, AFromRepository));
+        add(T.CreateFromJSON(jsv as TJSONObject, AFromRepository, false));
+
+  if ADestroyJSONArray then
+    AJSON.Free;
 end;
 
 function TDelphiBooksObjectList<T>.GetItemByGUID(AGuid: string): T;
@@ -926,13 +935,16 @@ begin
 end;
 
 constructor TDelphiBooksAuthorShort.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
   if not AJSON.TryGetValue<string>('name', FName) then
     FName := '';
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 function TDelphiBooksAuthorShort.GetClassDataVersion: integer;
@@ -971,13 +983,16 @@ begin
 end;
 
 constructor TDelphiBooksPublisherShort.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
   if not AJSON.TryGetValue<string>('label', FCompanyName) then
     FCompanyName := '';
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 function TDelphiBooksPublisherShort.GetClassDataVersion: integer;
@@ -1019,9 +1034,10 @@ begin
 end;
 
 constructor TDelphiBooksBookShort.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
   if not AJSON.TryGetValue<string>('name', FTitle) then
     FTitle := '';
   if not AJSON.TryGetValue<string>('lang', FLanguageISOCode) then
@@ -1032,6 +1048,9 @@ begin
     FCoverThumbURL := '';
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 function TDelphiBooksBookShort.GetClassDataVersion: integer;
@@ -1115,9 +1134,10 @@ begin
 end;
 
 constructor TDelphiBooksTextItem.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
   if not AJSON.TryGetValue<string>('lang', FLanguageISOCode) then
     raise exception.Create('Language ISO code not found');
 
@@ -1125,6 +1145,9 @@ begin
     FText := '';
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 function TDelphiBooksTextItem.GetClassDataVersion: integer;
@@ -1191,11 +1214,12 @@ begin
 end;
 
 constructor TDelphiBooksAuthor.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 var
   jsa: TJSONArray;
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
   if AFromRepository then
   begin
     if not AJSON.TryGetValue<string>('lastname', FLastName) then
@@ -1215,7 +1239,7 @@ begin
   begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FDescriptions.Parent := self;
   end;
 
@@ -1223,11 +1247,14 @@ begin
   begin
     FBooks.Free;
     Books := TDelphiBooksBookShortsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FBooks.Parent := self;
   end;
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 destructor TDelphiBooksAuthor.Destroy;
@@ -1348,11 +1375,12 @@ begin
 end;
 
 constructor TDelphiBooksPublisher.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 var
   jsa: TJSONArray;
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
   if not AJSON.TryGetValue<string>('website', FWebSiteURL) then
     FWebSiteURL := '';
 
@@ -1360,7 +1388,7 @@ begin
   begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FDescriptions.Parent := self;
   end;
 
@@ -1368,11 +1396,14 @@ begin
   begin
     FBooks.Free;
     Books := TDelphiBooksBookShortsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FBooks.Parent := self;
   end;
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 destructor TDelphiBooksPublisher.Destroy;
@@ -1468,11 +1499,12 @@ begin
 end;
 
 constructor TDelphiBooksBook.CreateFromJSON(AJSON: TJSONObject;
-AFromRepository: boolean);
+AFromRepository: boolean; ADestroyJSONObject: boolean);
 var
   jsa: TJSONArray;
 begin
-  inherited;
+  inherited CreateFromJSON(AJSON, AFromRepository, false);
+
   if not AJSON.TryGetValue<string>('isbn10', FISBN10) then
     FISBN10 := '';
   if not AJSON.TryGetValue<string>('isbn13', FISBN13) then
@@ -1525,7 +1557,7 @@ begin
   begin
     FAuthors.Free;
     Authors := TDelphiBooksAuthorShortsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FAuthors.Parent := self;
   end;
 
@@ -1533,7 +1565,7 @@ begin
   begin
     FPublishers.Free;
     Publishers := TDelphiBooksPublisherShortsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FPublishers.Parent := self;
   end;
 
@@ -1541,7 +1573,7 @@ begin
   begin
     FDescriptions.Free;
     Descriptions := TDelphiBooksDescriptionsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FDescriptions.Parent := self;
   end;
 
@@ -1549,7 +1581,7 @@ begin
   begin
     FTOCs.Free;
     TOCs := TDelphiBooksTableOfContentsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FTOCs.Parent := self;
   end;
 
@@ -1557,11 +1589,14 @@ begin
   begin
     FKeywords.Free;
     Keywords := TDelphiBooksKeywordsObjectList.CreateFromJSON(jsa,
-      AFromRepository);
+      AFromRepository, false);
     FKeywords.Parent := self;
   end;
 
   FHasChanged := false;
+
+  if ADestroyJSONObject then
+    AJSON.Free;
 end;
 
 destructor TDelphiBooksBook.Destroy;
