@@ -654,6 +654,10 @@ end;
 
 procedure TDelphiBooksItem.SetPageName(const Value: string);
 begin
+  if (Value.length > 128) then
+    raise exception.Create('Page name too long : 128 max expected, ' +
+      Value.length.ToString + ' characters in this name.');
+
   if FPageName = Value then
     exit;
 
