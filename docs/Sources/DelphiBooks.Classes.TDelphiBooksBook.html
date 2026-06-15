@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Delphi Books Common Library: DelphiBooks.Classes: Class TDelphiBooksBook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 1.0.4">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="StyleSheet" type="text/css" href="bootstrap.min.css">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<nav class="navbar d-md-none sticky-top bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="index.html">Delphi Books Common Library</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarNav" aria-controls="sidebarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
+<div class="offcanvas-md offcanvas-start navigation" tabindex="-1" id="sidebarNav" data-bs-scroll="true">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Delphi Books Common Library</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarNav" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body py-2">
+<h2><a href="index.html">Delphi Books Common Library</a></h2><ul class="nav flex-column px-3"><li class="nav-item"><a class="nav-link px-2 py-1" href="AllUnits.html">Units</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="ClassHierarchy.html">Class Hierarchy</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="AllTypes.html">Types</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="AllVariables.html">Variables</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="AllConstants.html">Constants</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="AllFunctions.html">Functions and Procedures</a></li><li class="nav-item"><a class="nav-link px-2 py-1" href="AllIdentifiers.html">Identifiers</a></li></ul></div></div>
+<main class="pasdoc-content content">
+<div class="container-fluid py-3 px-4">
+<span id="TDelphiBooksBook"></span><h1 class="cio">Class TDelphiBooksBook</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></div><div class="one_section"><a class="section" href="#PasDoc-Methods">Methods</a></div><div class="one_section"><a class="section" href="#PasDoc-Properties">Properties</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a href="DelphiBooks.Classes.html">DelphiBooks.Classes</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TDelphiBooksBook = class(<a class="normal" href="DelphiBooks.Classes.TDelphiBooksBookShort.html">TDelphiBooksBookShort</a>)</code></p>
+<h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Hierarchy"></span><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="ancestor"><a class="normal" href="DelphiBooks.Classes.TDelphiBooksItem.html">TDelphiBooksItem</a></li>
+<li class="ancestor"><a class="normal" href="DelphiBooks.Classes.TDelphiBooksBookShort.html">TDelphiBooksBookShort</a></li>
+<li class="thisitem">TDelphiBooksBook</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Methods"></span><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list visibility-protected">
+<td class="visibility"><span class="badge vis-protected">Protected</span></td>
+<td class="itemcode"><code>function <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#GetClassDataVersion">GetClassDataVersion</a></strong>: integer; override;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>constructor <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#CreateFromJSON-TJSONObject-boolean-boolean-">CreateFromJSON</a></strong>(AJSON: TJSONObject; AFromRepository: boolean; ADestroyJSONObject: boolean); override;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>function <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#ToJSONObject-boolean-">ToJSONObject</a></strong>(ForDelphiBooksRepository: boolean = false) : TJSONObject; override;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>constructor <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Create">Create</a></strong>; override;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>destructor <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Destroy">Destroy</a></strong>; override;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Properties"></span><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Descriptions">Descriptions</a></strong>: <a href="DelphiBooks.Classes.TDelphiBooksDescriptionsObjectList.html">TDelphiBooksDescriptionsObjectList</a> read FDescriptions
+      write SetDescriptions;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#TOCs">TOCs</a></strong>: <a href="DelphiBooks.Classes.TDelphiBooksTableOfContentsObjectList.html">TDelphiBooksTableOfContentsObjectList</a> read FTOCs
+      write SetTOCs;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Keywords">Keywords</a></strong>: <a href="DelphiBooks.Classes.TDelphiBooksKeywordsObjectList.html">TDelphiBooksKeywordsObjectList</a> read FKeywords
+      write SetKeywords;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Authors">Authors</a></strong>: <a href="DelphiBooks.Classes.TDelphiBooksAuthorShortsObjectList.html">TDelphiBooksAuthorShortsObjectList</a> read FAuthors
+      write SetAuthors;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Publishers">Publishers</a></strong>: <a href="DelphiBooks.Classes.TDelphiBooksPublisherShortsObjectList.html">TDelphiBooksPublisherShortsObjectList</a> read FPublishers
+      write SetPublishers;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#ISBN10">ISBN10</a></strong>: string read FISBN10 write SetISBN10;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#ISBN13">ISBN13</a></strong>: string read FISBN13 write SetISBN13;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#WebSiteURL">WebSiteURL</a></strong>: string read FWebSiteURL write SetWebSiteURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#CoverURL">CoverURL</a></strong>: string read FCoverURL write SetCoverURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover100pxWidthURL">Cover100pxWidthURL</a></strong>: string read FCover100pxWidthURL
+      write SetCover100pxWidthURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover150pxWidthURL">Cover150pxWidthURL</a></strong>: string read FCover150pxWidthURL
+      write SetCover150pxWidthURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover200pxWidthURL">Cover200pxWidthURL</a></strong>: string read FCover200pxWidthURL
+      write SetCover200pxWidthURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover300pxWidthURL">Cover300pxWidthURL</a></strong>: string read FCover300pxWidthURL
+      write SetCover300pxWidthURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover400pxWidthURL">Cover400pxWidthURL</a></strong>: string read FCover400pxWidthURL
+      write SetCover400pxWidthURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover500pxWidthURL">Cover500pxWidthURL</a></strong>: string read FCover500pxWidthURL
+      write SetCover500pxWidthURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover100pxHeightURL">Cover100pxHeightURL</a></strong>: string read FCover100pxHeightURL
+      write SetCover100pxHeightURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover200pxHeightURL">Cover200pxHeightURL</a></strong>: string read FCover200pxHeightURL
+      write SetCover200pxHeightURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover300pxHeightURL">Cover300pxHeightURL</a></strong>: string read FCover300pxHeightURL
+      write SetCover300pxHeightURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover400pxHeightURL">Cover400pxHeightURL</a></strong>: string read FCover400pxHeightURL
+      write SetCover400pxHeightURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover500pxHeightURL">Cover500pxHeightURL</a></strong>: string read FCover500pxHeightURL
+      write SetCover500pxHeightURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover100pxSquareURL">Cover100pxSquareURL</a></strong>: string read FCover100pxSquareURL
+      write SetCover100pxSquareURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover200pxSquareURL">Cover200pxSquareURL</a></strong>: string read FCover200pxSquareURL
+      write SetCover200pxSquareURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover300pxSquareURL">Cover300pxSquareURL</a></strong>: string read FCover300pxSquareURL
+      write SetCover300pxSquareURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover400pxSquareURL">Cover400pxSquareURL</a></strong>: string read FCover400pxSquareURL
+      write SetCover400pxSquareURL;</code></td>
+</tr>
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover500pxSquareURL">Cover500pxSquareURL</a></strong>: string read FCover500pxSquareURL
+      write SetCover500pxSquareURL;</code></td>
+</tr>
+<tr class="list2 visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><code>property <strong><a href="DelphiBooks.Classes.TDelphiBooksBook.html#Cover130x110pxURL">Cover130x110pxURL</a></strong>: string read FCover130x110pxURL
+      write SetCover130x110pxURL;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail visibility-protected wide_list">
+<tr class="list visibility-protected">
+<td class="visibility"><span class="badge vis-protected">Protected</span></td>
+<td class="itemcode"><span id="GetClassDataVersion"></span><code>function <strong>GetClassDataVersion</strong>: integer; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="CreateFromJSON-TJSONObject-boolean-boolean-"></span><code>constructor <strong>CreateFromJSON</strong>(AJSON: TJSONObject; AFromRepository: boolean; ADestroyJSONObject: boolean); override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="ToJSONObject-boolean-"></span><code>function <strong>ToJSONObject</strong>(ForDelphiBooksRepository: boolean = false) : TJSONObject; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Create"></span><code>constructor <strong>Create</strong>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Destroy"></span><code>destructor <strong>Destroy</strong>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Descriptions"></span><code>property <strong>Descriptions</strong>: <a href="DelphiBooks.Classes.TDelphiBooksDescriptionsObjectList.html">TDelphiBooksDescriptionsObjectList</a> read FDescriptions
+      write SetDescriptions;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="TOCs"></span><code>property <strong>TOCs</strong>: <a href="DelphiBooks.Classes.TDelphiBooksTableOfContentsObjectList.html">TDelphiBooksTableOfContentsObjectList</a> read FTOCs
+      write SetTOCs;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Keywords"></span><code>property <strong>Keywords</strong>: <a href="DelphiBooks.Classes.TDelphiBooksKeywordsObjectList.html">TDelphiBooksKeywordsObjectList</a> read FKeywords
+      write SetKeywords;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Authors"></span><code>property <strong>Authors</strong>: <a href="DelphiBooks.Classes.TDelphiBooksAuthorShortsObjectList.html">TDelphiBooksAuthorShortsObjectList</a> read FAuthors
+      write SetAuthors;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Publishers"></span><code>property <strong>Publishers</strong>: <a href="DelphiBooks.Classes.TDelphiBooksPublisherShortsObjectList.html">TDelphiBooksPublisherShortsObjectList</a> read FPublishers
+      write SetPublishers;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="ISBN10"></span><code>property <strong>ISBN10</strong>: string read FISBN10 write SetISBN10;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="ISBN13"></span><code>property <strong>ISBN13</strong>: string read FISBN13 write SetISBN13;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="WebSiteURL"></span><code>property <strong>WebSiteURL</strong>: string read FWebSiteURL write SetWebSiteURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="CoverURL"></span><code>property <strong>CoverURL</strong>: string read FCoverURL write SetCoverURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover100pxWidthURL"></span><code>property <strong>Cover100pxWidthURL</strong>: string read FCover100pxWidthURL
+      write SetCover100pxWidthURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover150pxWidthURL"></span><code>property <strong>Cover150pxWidthURL</strong>: string read FCover150pxWidthURL
+      write SetCover150pxWidthURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover200pxWidthURL"></span><code>property <strong>Cover200pxWidthURL</strong>: string read FCover200pxWidthURL
+      write SetCover200pxWidthURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover300pxWidthURL"></span><code>property <strong>Cover300pxWidthURL</strong>: string read FCover300pxWidthURL
+      write SetCover300pxWidthURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover400pxWidthURL"></span><code>property <strong>Cover400pxWidthURL</strong>: string read FCover400pxWidthURL
+      write SetCover400pxWidthURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover500pxWidthURL"></span><code>property <strong>Cover500pxWidthURL</strong>: string read FCover500pxWidthURL
+      write SetCover500pxWidthURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover100pxHeightURL"></span><code>property <strong>Cover100pxHeightURL</strong>: string read FCover100pxHeightURL
+      write SetCover100pxHeightURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover200pxHeightURL"></span><code>property <strong>Cover200pxHeightURL</strong>: string read FCover200pxHeightURL
+      write SetCover200pxHeightURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover300pxHeightURL"></span><code>property <strong>Cover300pxHeightURL</strong>: string read FCover300pxHeightURL
+      write SetCover300pxHeightURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover400pxHeightURL"></span><code>property <strong>Cover400pxHeightURL</strong>: string read FCover400pxHeightURL
+      write SetCover400pxHeightURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover500pxHeightURL"></span><code>property <strong>Cover500pxHeightURL</strong>: string read FCover500pxHeightURL
+      write SetCover500pxHeightURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover100pxSquareURL"></span><code>property <strong>Cover100pxSquareURL</strong>: string read FCover100pxSquareURL
+      write SetCover100pxSquareURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover200pxSquareURL"></span><code>property <strong>Cover200pxSquareURL</strong>: string read FCover200pxSquareURL
+      write SetCover200pxSquareURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover300pxSquareURL"></span><code>property <strong>Cover300pxSquareURL</strong>: string read FCover300pxSquareURL
+      write SetCover300pxSquareURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover400pxSquareURL"></span><code>property <strong>Cover400pxSquareURL</strong>: string read FCover400pxSquareURL
+      write SetCover400pxSquareURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover500pxSquareURL"></span><code>property <strong>Cover500pxSquareURL</strong>: string read FCover500pxSquareURL
+      write SetCover500pxSquareURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail visibility-public wide_list">
+<tr class="list visibility-public">
+<td class="visibility"><span class="badge vis-public">Public</span></td>
+<td class="itemcode"><span id="Cover130x110pxURL"></span><code>property <strong>Cover130x110pxURL</strong>: string read FCover130x110pxURL
+      write SetCover130x110pxURL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<a href="https://delphi-books.com/opendata.html" target="_blank">Delphi Books open data API</a> (c) 2020-2026 <a href="https://patrick.premartin.fr" target="_blank">Patrick PREMARTIN</a> - Powered by <a href="https://pasdoc.github.io/" target="_blank">PasDoc</a>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 1.0.4</a>. </em>
+</span>
+</div></main>
+<script src="bootstrap.bundle.min.js"></script>
+</body></html>
