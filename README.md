@@ -2,9 +2,16 @@
 
 [Cette page en français.](LISEZMOI.md)
 
+> [!WARNING]
+> Following Microsoft's decision to merge GitHub into its AI division in the summer of 2025 and therefore to consider what we publish on it only as a source of training for its models without any compensation (apart from hosting the source codes) or to bombard us with their injunctions to use Copilot everywhere, for everything and anything, I have decided to stop maintaining the repositories here.
+>
+> Maintenance of this project has been moved to Codeberg at https://codeberg.org/Delphi-Books
+>
+> Codeberg is a community-based hosting service located in Europe that respects developers, the license of each project, and the privacy of those who connect to it.
+
 Delphi units shared between projects using or manipulating data from the [Delphi-Books.com](https://delphi-books.com) site and from the open data REST API.
 
-See [this code repository](https://github.com/DeveloppeurPascal/DelphiBooks-WebSite) to see this files in production or check the [sample projects](https://github.com/DeveloppeurPascal/DelphiBooks4Delphi).
+See [this code repository](https://codeberg.org/Delphi-Books/DelphiBooks-WebSite) to see this files in production or check the [sample projects](https://codeberg.org/Delphi-Books/DelphiBooks4Delphi).
 
 This code repository contains a project developed in Object Pascal language under Delphi. You don't know what Delphi is and where to download it ? You'll learn more [on this web site](https://delphi-resources.developpeur-pascal.fr/).
 
@@ -20,7 +27,7 @@ Follow my development streams of software, video games, mobile applications and 
 
 ## Source code installation
 
-To download this code repository, we recommend using "git", but you can also download a ZIP file directly from [its GitHub repository](https://github.com/DeveloppeurPascal/DelphiBooks-Common).
+To download this code repository, we recommend using "git", but you can also download a ZIP file directly from [its GitHub repository](https://codeberg.org/Delphi-Books/DelphiBooks-Common).
 
 ## Documentation and support
 
@@ -42,7 +49,7 @@ Normally, my libraries and components should also run on at least the current ve
 
 There's no guarantee of compatibility with earlier versions, even though I try to keep my code clean and avoid using too many of the new ways of writing in it (type inference, inline var and multiline strings).
 
-If you detect any anomalies on earlier versions, please don't hesitate to [report them](https://github.com/DeveloppeurPascal/DelphiBooks-Common/issues) so that I can test and try to correct or provide a workaround.
+If you detect any anomalies on earlier versions, please don't hesitate to [report them](https://codeberg.org/Delphi-Books/DelphiBooks-Common/issues) so that I can test and try to correct or provide a workaround.
 
 ## License to use this code repository and its contents
 
@@ -61,7 +68,7 @@ The source codes of this code repository as well as any compiled version are pro
 
 ## How to ask a new feature, report a bug or a security issue ?
 
-If you want an answer from the project owner the best way to ask for a new feature or report a bug is to go to [the GitHub repository](https://github.com/DeveloppeurPascal/DelphiBooks-Common) and [open a new issue](https://github.com/DeveloppeurPascal/DelphiBooks-Common/issues).
+If you want an answer from the project owner the best way to ask for a new feature or report a bug is to go to [the GitHub repository](https://codeberg.org/Delphi-Books/DelphiBooks-Common) and [open a new issue](https://codeberg.org/Delphi-Books/DelphiBooks-Common/issues).
 
 If you found a security issue please don't report it publicly before a patch is available. Explain the case by [sending a private message to the author](https://developpeur-pascal.fr/nous-contacter.php).
 

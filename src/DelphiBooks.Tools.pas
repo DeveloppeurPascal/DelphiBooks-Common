@@ -26,10 +26,10 @@
   https://delphi-books.com/opendata.html
 
   Project site :
-  https://github.com/DeveloppeurPascal/DelphiBooks-Common
+  https://codeberg.org/Delphi-Books/DelphiBooks-Common
 
   ***************************************************************************
-  File last update : 2026-06-15T18:25:51.184+02:00
+  File last update : 2026-06-15T19:34:36.922+02:00
   Signature : 1f0f9b035128be67a83d0c198ae4ae13e5f0cc6d
   ***************************************************************************
 *)
